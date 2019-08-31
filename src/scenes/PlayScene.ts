@@ -2,40 +2,37 @@ import { CST } from "../CST";
 import Character from "../resources/characters/Character";
 import Mandy from "../resources/characters/Mandy";
 import _ from "underscore";
+import Player from "../resources/characters/Player";
 
 export class PlayScene extends Phaser.Scene {
   keyboard!: { [index: string]: Phaser.Input.Keyboard.Key };
   hooded!: Phaser.Physics.Arcade.Sprite;
   mandy!: Phaser.Physics.Arcade.Sprite;
+  player!: Player;
 
   constructor() {
     super({
       key: CST.SCENES.PLAY
     });
+
+    this.hooded;
+    this.mandy;
   }
   //optional methods
   init() {
     console.log("play scene!!!");
   }
   preload() {
-    // this.anims.create({
-    //   key: "dazzle",
-    //   frameRate: 10,
-    //   frames: this.anims.generateFrameNames("daze", {
-    //     prefix: "daze0",
-    //     suffix: ".png",
-    //     start: 0,
-    //     end: 41
-    //   })
-    // });
-
-    const hooded = new Character(
+    this.hooded = new Character(
       this,
+      200,
+      300,
+      "hooded",
+      0,
       "hooded",
       64,
       64,
       "characters",
-      "hooded",
       10,
       {
         top: _.range(104, 112 + 1),
@@ -44,15 +41,19 @@ export class PlayScene extends Phaser.Scene {
         left: _.range(117, 125 + 1)
       }
     );
-    hooded.preload();
 
-    const mandy = new Character(
+    this.hooded.preload();
+
+    this.mandy = new Mandy(
       this,
+      300,
+      300,
+      "mandy",
+      "characters",
       "mandy",
       64,
       64,
       "characters",
-      "mandy",
       10,
       {
         top: _.range(325, 332 + 1),
@@ -61,67 +62,35 @@ export class PlayScene extends Phaser.Scene {
         left: _.range(390, 398 + 1)
       }
     );
-    mandy.preload();
+    this.mandy.preload();
   }
 
   //required!
   create() {
-    //this.scene.start(CST.SCENES.MENU, "hello from loadscene");
-    //this.scene.launch();
-    // let pimple: Phaser.GameObjects.Sprite = this.add.sprite(
-    //   100,
-    //   100,
-    //   "daze",
-    //   "daze015.png"
-    // );
-    // pimple.play("dazzle");
+    console.log(this.hooded);
 
-    this.hooded = this.physics.add.sprite(200, 200, "hooded");
+    this.hooded = this.hooded.addSprite();
+    this.mandy = this.mandy.addSprite();
+
+    // this.mandy = this.physics.add.sprite(300,300)
     //you can pass his obj to window, so you can debug it easier
 
     //mandy is our npc
-    this.mandy = new Mandy(300, 500);
-
-    this.mandy.create();
 
     //@ts-ignore
     window.hooded = this.hooded;
-    window.mandy = mandy;
+    window.mandy = this.mandy;
 
     this.keyboard = this.input.keyboard.addKeys("W, A, S, D");
+
+    // Add our player: Hooded!
+    this.player = new Player(this.hooded, this.input.keyboard);
+    window.player = this.player;
   }
 
   update(time: number, delta: number) {
-    this.physics.world.collide(this.mandy, this.hooded);
+    // this.physics.world.collide(this.mandy, this.hooded);
 
-    if (this.keyboard.D.isDown === true) {
-      console.log("move right");
-      this.hooded.setVelocityX(64);
-      this.hooded.play("hooded_right", true);
-    }
-    if (this.keyboard.A.isDown === true) {
-      console.log("move left");
-      this.hooded.setVelocityX(-64);
-      this.hooded.play("hooded_left", true);
-    }
-    if (this.keyboard.W.isDown === true) {
-      console.log("move up");
-      this.hooded.setVelocityY(-64);
-      this.hooded.play("hooded_top", true);
-    }
-
-    if (this.keyboard.S.isDown === true) {
-      console.log("move up");
-      this.hooded.setVelocityY(64);
-      this.hooded.play("hooded_bottom", true);
-    }
-
-    if (this.keyboard.A.isUp && this.keyboard.D.isUp) {
-      this.hooded.setVelocityX(0);
-    }
-
-    if (this.keyboard.W.isUp && this.keyboard.S.isUp) {
-      this.hooded.setVelocityY(0);
-    }
+    this.player.handleKeyboardMovements();
   }
 }

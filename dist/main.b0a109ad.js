@@ -257,7 +257,8 @@ function (_super) {
 
 
   LoadScene.prototype.create = function () {
-    this.scene.start(CST_1.CST.SCENES.MENU); // this.scene.launch();
+    // this.scene.start(CST.SCENES.MENU);
+    this.scene.start(CST_1.CST.SCENES.PLAY); // this.scene.launch();
     //we can also add the scene dynamically
     // this.scene.add(CST.SCENES.MENU, MenuScene);
     // this.scene.start(CST.SCENES.MENU, "hello from loadscene")
@@ -296,49 +297,98 @@ exports.default = {
 },{}],"src/resources/characters/Character.ts":[function(require,module,exports) {
 "use strict";
 
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
 var Character =
 /** @class */
-function () {
-  function Character(scene, spriteKey, frameHeight, frameWidth, atlas, frame, frameRate, animationObj) {
-    this.scene = scene;
-    this.spriteKey = spriteKey;
-    this.frameWidth = frameWidth;
-    this.frameHeight = frameHeight;
-    this.atlas = atlas;
-    this.frame = frame;
-    this.frameRate = frameRate;
-    this.animationObj = animationObj;
+function (_super) {
+  __extends(Character, _super);
+
+  function Character(scene, x, y, texture, frame, spriteKey, frameHeight, frameWidth, atlas, frameRate, animationObj) {
+    var _this = _super.call(this, scene, x, y, texture, frame) || this;
+
+    _this.spriteKey = spriteKey;
+    _this.frameWidth = frameWidth;
+    _this.frameHeight = frameHeight;
+    _this.atlas = atlas;
+    _this.frameRate = frameRate;
+    _this.animationObj = animationObj;
+    return _this; //add character sprite
+    // scene.sys.updateList.add(this);
+    // scene.sys.displayList.add(this);
+    // scene.physics.world.enableBody(this);
+    // this.setImmovable(true); //can be moved by collisions
   }
 
-  Character.prototype.preload = function () {
-    //load textures
-    var _this = this;
+  Character.prototype.addSprite = function () {
+    return this.scene.physics.add.sprite(this.x, this.y, this.spriteKey);
+  };
 
+  Character.prototype.getPausedFrame = function (direction) {
+    return this.animationObj[direction][0];
+  };
+
+  Character.prototype.preload = function () {
+    var _this = this; //load textures
+
+
+    console.log("preloading character textures for ... " + this.spriteKey);
     this.scene.textures.addSpriteSheetFromAtlas(this.spriteKey, {
       frameHeight: this.frameHeight,
       frameWidth: this.frameWidth,
       atlas: this.atlas,
-      frame: this.frame
+      frame: this.spriteKey
     }); // Animations ========================================
 
     var directions = ["top", "right", "bottom", "left"];
     directions.forEach(function (direction) {
+      //@ts-ignore
+      var animationFrames = _this.animationObj[direction];
+
       _this.scene.anims.create({
         key: _this.spriteKey + "_" + direction,
         frameRate: _this.frameRate,
         frames: _this.scene.anims.generateFrameNumbers(_this.spriteKey, {
-          frames: _this.animationObj[direction]
-        })
+          frames: animationFrames
+        }),
+        repeat: -1
       });
+    });
+    this.on("animationcomplete", function () {
+      console.log("var");
     });
   };
 
   return Character;
-}();
+}(Phaser.Physics.Arcade.Sprite);
 
 exports.default = Character;
 },{}],"src/resources/characters/Mandy.ts":[function(require,module,exports) {
@@ -387,18 +437,10 @@ var Mandy =
 function (_super) {
   __extends(Mandy, _super);
 
-  function Mandy(posX, posY) {
-    var _this = _super.call(this, scene, spriteKey, frameHeight, frameWidth, atlas, frame, frameRate, animationObj) || this;
-
-    _this.posX = posX;
-    _this.posY = posY;
-    _this.character = undefined;
-    return _this;
+  function Mandy(scene, x, y, texture, frame, spriteKey, frameHeight, frameWidth, atlas, frameRate, animationObj) {
+    return _super.call(this, scene, x, y, texture, frame, spriteKey, frameHeight, frameWidth, atlas, frameRate, animationObj) || this; //start random movements
+    // this.randomWalk();
   }
-
-  Mandy.prototype.create = function () {
-    this.character = this.scene.physics.add.sprite(this.posX, this.posY, this.spriteKey);
-  };
 
   Mandy.prototype.randomWalk = function () {
     var _this = this;
@@ -409,26 +451,26 @@ function (_super) {
       var animationName = _this.spriteKey + "_" + directions[n];
       console.log("animation name: " + animationName);
 
-      _this.character.play(animationName);
+      _this.play(animationName, true);
 
       switch (directions[n]) {
         case "right":
-          _this.character.setVelocityX(64);
+          _this.setVelocityX(64);
 
           break;
 
         case "left":
-          _this.character.setVelocityX(-64);
+          _this.setVelocityX(-64);
 
           break;
 
         case "top":
-          _this.character.setVelocityY(-64);
+          _this.setVelocityY(-64);
 
           break;
 
         case "bottom":
-          _this.character.setVelocityY(+64);
+          _this.setVelocityY(+64);
 
           break;
 
@@ -437,10 +479,10 @@ function (_super) {
       } //pause on animation complete
 
 
-      _this.character.on("animationcomplete", function () {
+      _this.on("animationcomplete", function () {
         console.log("animation complete");
 
-        _this.character.setVelocity(0);
+        _this.setVelocity(0);
       });
     }, 3000);
   };
@@ -2145,6 +2187,76 @@ var define;
   }
 }());
 
+},{}],"src/resources/characters/Player.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Player =
+/** @class */
+function () {
+  function Player(sprite, keyboard) {
+    this.sprite = sprite;
+    this.keyboard = keyboard;
+  }
+
+  Player.prototype.handleKeyboardMovements = function () {
+    // RIGHT MOVEMENT ========================================
+    var _this = this;
+
+    var keyboardKeys = this.keyboard.addKeys("W, A, S, D");
+    this.keyboard.on("keydown", function (event) {
+      switch (event.key) {
+        case "d":
+          //right
+          _this.sprite.setVelocityX(64);
+
+          _this.sprite.play(_this.sprite.texture.key + "_right", true);
+
+          break;
+
+        case "a":
+          //left
+          _this.sprite.setVelocityX(-64);
+
+          _this.sprite.play(_this.sprite.texture.key + "_left", true);
+
+          break;
+
+        case "w":
+          //top
+          _this.sprite.setVelocityY(-64);
+
+          _this.sprite.play(_this.sprite.texture.key + "_top", true);
+
+          break;
+
+        case "s":
+          //bottom
+          _this.sprite.setVelocityY(64);
+
+          _this.sprite.play(_this.sprite.texture.key + "_bottom", true);
+
+          break;
+      }
+    }); // on character stop.
+
+    this.keyboard.on("keyup", function (event) {
+      //set the sprite to the first animation frame (character standing)
+      _this.sprite.setFrame(_this.sprite.anims.currentAnim.frames[0].textureFrame);
+
+      _this.sprite.anims.stop();
+
+      _this.sprite.setVelocity(0);
+    });
+  };
+
+  return Player;
+}();
+
+exports.default = Player;
 },{}],"src/scenes/PlayScene.ts":[function(require,module,exports) {
 "use strict";
 
@@ -2192,15 +2304,21 @@ var Mandy_1 = __importDefault(require("../resources/characters/Mandy"));
 
 var underscore_1 = __importDefault(require("underscore"));
 
+var Player_1 = __importDefault(require("../resources/characters/Player"));
+
 var PlayScene =
 /** @class */
 function (_super) {
   __extends(PlayScene, _super);
 
   function PlayScene() {
-    return _super.call(this, {
+    var _this = _super.call(this, {
       key: CST_1.CST.SCENES.PLAY
     }) || this;
+
+    _this.hooded;
+    _this.mandy;
+    return _this;
   } //optional methods
 
 
@@ -2209,95 +2327,49 @@ function (_super) {
   };
 
   PlayScene.prototype.preload = function () {
-    // this.anims.create({
-    //   key: "dazzle",
-    //   frameRate: 10,
-    //   frames: this.anims.generateFrameNames("daze", {
-    //     prefix: "daze0",
-    //     suffix: ".png",
-    //     start: 0,
-    //     end: 41
-    //   })
-    // });
-    var hooded = new Character_1.default(this, "hooded", 64, 64, "characters", "hooded", 10, {
+    this.hooded = new Character_1.default(this, 200, 300, "hooded", 0, "hooded", 64, 64, "characters", 10, {
       top: underscore_1.default.range(104, 112 + 1),
       right: underscore_1.default.range(143, 151 + 1),
       bottom: underscore_1.default.range(130, 138 + 1),
       left: underscore_1.default.range(117, 125 + 1)
     });
-    hooded.preload();
-    var mandy = new Character_1.default(this, "mandy", 64, 64, "characters", "mandy", 10, {
+    this.hooded.preload();
+    this.mandy = new Mandy_1.default(this, 300, 300, "mandy", "characters", "mandy", 64, 64, "characters", 10, {
       top: underscore_1.default.range(325, 332 + 1),
       right: underscore_1.default.range(416, 424 + 1),
       bottom: underscore_1.default.range(403, 411 + 1),
       left: underscore_1.default.range(390, 398 + 1)
     });
-    mandy.preload();
+    this.mandy.preload();
   }; //required!
 
 
   PlayScene.prototype.create = function () {
-    //this.scene.start(CST.SCENES.MENU, "hello from loadscene");
-    //this.scene.launch();
-    // let pimple: Phaser.GameObjects.Sprite = this.add.sprite(
-    //   100,
-    //   100,
-    //   "daze",
-    //   "daze015.png"
-    // );
-    // pimple.play("dazzle");
-    this.hooded = this.physics.add.sprite(200, 200, "hooded"); //you can pass his obj to window, so you can debug it easier
+    console.log(this.hooded);
+    this.hooded = this.hooded.addSprite();
+    this.mandy = this.mandy.addSprite(); // this.mandy = this.physics.add.sprite(300,300)
+    //you can pass his obj to window, so you can debug it easier
     //mandy is our npc
-
-    this.mandy = new Mandy_1.default(300, 500);
-    this.mandy.create(); //@ts-ignore
+    //@ts-ignore
 
     window.hooded = this.hooded;
-    window.mandy = mandy;
-    this.keyboard = this.input.keyboard.addKeys("W, A, S, D");
+    window.mandy = this.mandy;
+    this.keyboard = this.input.keyboard.addKeys("W, A, S, D"); // Add our player: Hooded!
+
+    this.player = new Player_1.default(this.hooded, this.input.keyboard);
+    window.player = this.player;
   };
 
   PlayScene.prototype.update = function (time, delta) {
-    this.physics.world.collide(this.mandy, this.hooded);
-
-    if (this.keyboard.D.isDown === true) {
-      console.log("move right");
-      this.hooded.setVelocityX(64);
-      this.hooded.play("hooded_right", true);
-    }
-
-    if (this.keyboard.A.isDown === true) {
-      console.log("move left");
-      this.hooded.setVelocityX(-64);
-      this.hooded.play("hooded_left", true);
-    }
-
-    if (this.keyboard.W.isDown === true) {
-      console.log("move up");
-      this.hooded.setVelocityY(-64);
-      this.hooded.play("hooded_top", true);
-    }
-
-    if (this.keyboard.S.isDown === true) {
-      console.log("move up");
-      this.hooded.setVelocityY(64);
-      this.hooded.play("hooded_bottom", true);
-    }
-
-    if (this.keyboard.A.isUp && this.keyboard.D.isUp) {
-      this.hooded.setVelocityX(0);
-    }
-
-    if (this.keyboard.W.isUp && this.keyboard.S.isUp) {
-      this.hooded.setVelocityY(0);
-    }
+    // this.physics.world.collide(this.mandy, this.hooded);
+    this.player.handleKeyboardMovements();
   };
 
   return PlayScene;
 }(Phaser.Scene);
 
 exports.PlayScene = PlayScene;
-},{"../CST":"src/CST.ts","../resources/characters/Character":"src/resources/characters/Character.ts","../resources/characters/Mandy":"src/resources/characters/Mandy.ts","underscore":"node_modules/underscore/underscore.js"}],"src/scenes/MenuScene.ts":[function(require,module,exports) {
+},{"../CST":"src/CST.ts","../resources/characters/Character":"src/resources/characters/Character.ts","../resources/characters/Mandy":"src/resources/characters/Mandy.ts","underscore":"node_modules/underscore/underscore.js","../resources/characters/Player":"src/resources/characters/Player.ts"}],"src/scenes/MenuScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -2459,7 +2531,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "35375" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "43631" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

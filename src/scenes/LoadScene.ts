@@ -85,7 +85,8 @@ export class LoadScene extends Phaser.Scene {
 
   //required!
   create() {
-    this.scene.start(CST.SCENES.MENU);
+    // this.scene.start(CST.SCENES.MENU);
+    this.scene.start(CST.SCENES.PLAY);
     // this.scene.launch();
 
     //we can also add the scene dynamically
