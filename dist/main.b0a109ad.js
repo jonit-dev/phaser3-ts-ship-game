@@ -242,8 +242,8 @@ function (_super) {
     */
 
     this.load.on("progress", function (percent) {
-      console.log("loading assets...");
-      console.log(percent);
+      // console.log("loading assets...");
+      // console.log(percent);
       var _a = _this.game.renderer,
           height = _a.height,
           width = _a.width; //get game screen size
@@ -328,7 +328,7 @@ function () {
     var directions = ["top", "right", "bottom", "left"];
     directions.forEach(function (direction) {
       _this.scene.anims.create({
-        key: direction,
+        key: _this.spriteKey + "_" + direction,
         frameRate: _this.frameRate,
         frames: _this.scene.anims.generateFrameNumbers(_this.spriteKey, {
           frames: _this.animationObj[direction]
@@ -387,32 +387,49 @@ var Mandy =
 function (_super) {
   __extends(Mandy, _super);
 
-  function Mandy() {
-    return _super.call(this, scene, spriteKey, frameHeight, frameWidth, atlas, frame, frameRate, animationObj) || this;
+  function Mandy(posX, posY) {
+    var _this = _super.call(this, scene, spriteKey, frameHeight, frameWidth, atlas, frame, frameRate, animationObj) || this;
+
+    _this.posX = posX;
+    _this.posY = posY;
+    _this.character = undefined;
+    return _this;
   }
 
-  Mandy.randomWalk = function (character) {
+  Mandy.prototype.create = function () {
+    this.character = this.scene.physics.add.sprite(this.posX, this.posY, this.spriteKey);
+  };
+
+  Mandy.prototype.randomWalk = function () {
+    var _this = this;
+
     setInterval(function () {
       var directions = ["top", "right", "bottom", "left"];
       var n = Math.floor(Math.random() * directions.length);
-      console.log("mandy is moving to => " + n + " => " + directions[n]);
-      character.play(directions[n]);
+      var animationName = _this.spriteKey + "_" + directions[n];
+      console.log("animation name: " + animationName);
+
+      _this.character.play(animationName);
 
       switch (directions[n]) {
         case "right":
-          character.setVelocityX(64);
+          _this.character.setVelocityX(64);
+
           break;
 
         case "left":
-          character.setVelocityX(-64);
+          _this.character.setVelocityX(-64);
+
           break;
 
         case "top":
-          character.setVelocityY(-64);
+          _this.character.setVelocityY(-64);
+
           break;
 
         case "bottom":
-          character.setVelocityY(+64);
+          _this.character.setVelocityY(+64);
+
           break;
 
         default:
@@ -420,9 +437,10 @@ function (_super) {
       } //pause on animation complete
 
 
-      character.on("animationcomplete", function () {
+      _this.character.on("animationcomplete", function () {
         console.log("animation complete");
-        character.setVelocity(0);
+
+        _this.character.setVelocity(0);
       });
     }, 3000);
   };
@@ -2231,38 +2249,39 @@ function (_super) {
     this.hooded = this.physics.add.sprite(200, 200, "hooded"); //you can pass his obj to window, so you can debug it easier
     //mandy is our npc
 
-    this.mandy = this.physics.add.sprite(300, 500, "mandy"); //lets make her walk randomly
+    this.mandy = new Mandy_1.default(300, 500);
+    this.mandy.create(); //@ts-ignore
 
-    Mandy_1.default.randomWalk(this.mandy); //@ts-ignore
-    // window.hooded = hooded;
-    // window.mandy = mandy;
-
+    window.hooded = this.hooded;
+    window.mandy = mandy;
     this.keyboard = this.input.keyboard.addKeys("W, A, S, D");
   };
 
   PlayScene.prototype.update = function (time, delta) {
+    this.physics.world.collide(this.mandy, this.hooded);
+
     if (this.keyboard.D.isDown === true) {
       console.log("move right");
       this.hooded.setVelocityX(64);
-      this.hooded.play("right", true);
+      this.hooded.play("hooded_right", true);
     }
 
     if (this.keyboard.A.isDown === true) {
       console.log("move left");
       this.hooded.setVelocityX(-64);
-      this.hooded.play("left", true);
+      this.hooded.play("hooded_left", true);
     }
 
     if (this.keyboard.W.isDown === true) {
       console.log("move up");
       this.hooded.setVelocityY(-64);
-      this.hooded.play("up", true);
+      this.hooded.play("hooded_top", true);
     }
 
     if (this.keyboard.S.isDown === true) {
       console.log("move up");
       this.hooded.setVelocityY(64);
-      this.hooded.play("bottom", true);
+      this.hooded.play("hooded_bottom", true);
     }
 
     if (this.keyboard.A.isUp && this.keyboard.D.isUp) {
@@ -2440,7 +2459,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "42063" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "35375" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

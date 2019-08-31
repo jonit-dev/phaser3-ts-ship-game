@@ -70,8 +70,8 @@ export class LoadScene extends Phaser.Scene {
     */
 
     this.load.on("progress", (percent: number) => {
-      console.log("loading assets...");
-      console.log(percent);
+      // console.log("loading assets...");
+      // console.log(percent);
 
       const { height, width } = this.game.renderer; //get game screen size
 

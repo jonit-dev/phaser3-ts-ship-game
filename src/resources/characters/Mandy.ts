@@ -1,7 +1,10 @@
 import Character from "./Character";
 
 class Mandy extends Character {
-  constructor() {
+  posX: number;
+  posY: number;
+
+  constructor(posX: integer, posY: integer) {
     super(
       scene,
       spriteKey,
@@ -12,29 +15,42 @@ class Mandy extends Character {
       frameRate,
       animationObj
     ); // super call parent constructor methods
+
+    this.posX = posX;
+    this.posY = posY;
+    this.character = undefined;
   }
 
-  static randomWalk(character: Phaser.Physics.Arcade.Sprite) {
+  create() {
+    this.character = this.scene.physics.add.sprite(
+      this.posX,
+      this.posY,
+      this.spriteKey
+    );
+  }
+
+  randomWalk() {
     setInterval(() => {
-      let directions = ["top", "right", "bottom", "left"];
+      const directions = ["top", "right", "bottom", "left"];
+      const n = Math.floor(Math.random() * directions.length);
 
-      let n = Math.floor(Math.random() * directions.length);
-      console.log(`mandy is moving to => ${n} => ${directions[n]}`);
+      const animationName = `${this.spriteKey}_${directions[n]}`;
+      console.log(`animation name: ${animationName}`);
 
-      character.play(directions[n]);
+      this.character.play(animationName);
 
       switch (directions[n]) {
         case "right":
-          character.setVelocityX(64);
+          this.character.setVelocityX(64);
           break;
         case "left":
-          character.setVelocityX(-64);
+          this.character.setVelocityX(-64);
           break;
         case "top":
-          character.setVelocityY(-64);
+          this.character.setVelocityY(-64);
           break;
         case "bottom":
-          character.setVelocityY(+64);
+          this.character.setVelocityY(+64);
           break;
 
         default:
@@ -42,9 +58,9 @@ class Mandy extends Character {
       }
 
       //pause on animation complete
-      character.on("animationcomplete", () => {
+      this.character.on("animationcomplete", () => {
         console.log("animation complete");
-        character.setVelocity(0);
+        this.character.setVelocity(0);
       });
     }, 3000);
   }

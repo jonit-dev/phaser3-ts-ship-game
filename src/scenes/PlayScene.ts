@@ -80,39 +80,40 @@ export class PlayScene extends Phaser.Scene {
     //you can pass his obj to window, so you can debug it easier
 
     //mandy is our npc
-    this.mandy = this.physics.add.sprite(300, 500, "mandy");
+    this.mandy = new Mandy(300, 500);
 
-    //lets make her walk randomly
-    Mandy.randomWalk(this.mandy);
+    this.mandy.create();
 
     //@ts-ignore
-    // window.hooded = hooded;
-    // window.mandy = mandy;
+    window.hooded = this.hooded;
+    window.mandy = mandy;
 
     this.keyboard = this.input.keyboard.addKeys("W, A, S, D");
   }
 
   update(time: number, delta: number) {
+    this.physics.world.collide(this.mandy, this.hooded);
+
     if (this.keyboard.D.isDown === true) {
       console.log("move right");
       this.hooded.setVelocityX(64);
-      this.hooded.play("right", true);
+      this.hooded.play("hooded_right", true);
     }
     if (this.keyboard.A.isDown === true) {
       console.log("move left");
       this.hooded.setVelocityX(-64);
-      this.hooded.play("left", true);
+      this.hooded.play("hooded_left", true);
     }
     if (this.keyboard.W.isDown === true) {
       console.log("move up");
       this.hooded.setVelocityY(-64);
-      this.hooded.play("up", true);
+      this.hooded.play("hooded_top", true);
     }
 
     if (this.keyboard.S.isDown === true) {
       console.log("move up");
       this.hooded.setVelocityY(64);
-      this.hooded.play("bottom", true);
+      this.hooded.play("hooded_bottom", true);
     }
 
     if (this.keyboard.A.isUp && this.keyboard.D.isUp) {

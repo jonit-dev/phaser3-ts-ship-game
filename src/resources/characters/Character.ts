@@ -43,7 +43,7 @@ class Character {
 
     directions.forEach(direction => {
       this.scene.anims.create({
-        key: direction,
+        key: `${this.spriteKey}_${direction}`,
         frameRate: this.frameRate,
         frames: this.scene.anims.generateFrameNumbers(this.spriteKey, {
           frames: this.animationObj[direction]
