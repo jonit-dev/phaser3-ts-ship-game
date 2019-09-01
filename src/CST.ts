@@ -1,19 +1,13 @@
 export const CST = {
   SCENES: {
-    LOAD: "LOAD",
-    MENU: "MENU",
-    PLAY: "PLAY"
+    EXAMPLE1: "EXAMPLE1",
+    EXAMPLE2: "EXAMPLE2",
+    EXAMPLE3: "EXAMPLE3"
   },
-  IMAGE: {
-    LOGO: "logo.png",
-    OPTIONS: "options_button.png",
-    PLAY: "play_button.png",
-    TITLE: "title_bg.jpg"
-  },
-  AUDIO: {
-    TITLE: "shinvy-childhood.mp3"
-  },
+  IMAGE: {},
+  AUDIO: {},
   SPRITE: {
-    CAT: "cat.png"
+    PLAYER: "player.png",
+    ENEMIES: "enemies.png"
   }
 };
