@@ -13,9 +13,13 @@ class Creature extends Phaser.GameObjects.Sprite {
 
   init() {
     this.loadAnimations();
-    this.randomWalk();
+    // this.randomWalk();
 
-    this.sprite = this.scene.add.sprite(
+    // this.add
+    //   .tween(this.sprite.body.velocity)
+    //   .to({ y: -32 }, 1500, Phaser.Easing.Linear.None, true);
+
+    this.sprite = this.scene.physics.add.sprite(
       300,
       300,
       "creatures",
@@ -26,16 +30,38 @@ class Creature extends Phaser.GameObjects.Sprite {
   }
 
   randomWalk() {
-    const n = Math.floor(Math.random() * 4);
-
-    console.log("starting creature random walk...");
-
     setInterval(() => {
-      console.log("animating..");
-      this.play("blue-spectre-bottom");
-      this.y += 32;
-    }, 1000);
+      const n = Math.floor((Math.random() + 1) * 4);
+
+      const d = Math.floor(Math.random() * 4);
+
+      const directions = ["top", "right", "bottom", "left"];
+
+      this.sprite.play(`blue-spectre-${directions[d]}`);
+
+      console.log(d);
+
+      console.log(`creature walking...${directions[d]}`);
+
+      const movingTargetPixels = 32;
+
+      switch (directions[d]) {
+        case "top":
+          break;
+        case "right":
+          this.sprite.x += 32;
+          break;
+        case "bottom":
+          this.sprite.y += 32;
+          break;
+        case "left":
+          this.sprite.x -= 32;
+          break;
+      }
+    }, 6000);
   }
+
+  smoothMove() {}
 
   loadAnimations() {
     const directions = [

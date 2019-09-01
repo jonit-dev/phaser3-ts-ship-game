@@ -50,4 +50,7 @@ export class WorldScene extends Phaser.Scene {
     //this.scene.start(CST.SCENES.MENU, "hello from loadscene");
     //this.scene.launch();
   }
+  update() {
+    this.player.handleKeyboardMovements();
+  }
 }

@@ -1,4 +1,6 @@
 class Player extends Phaser.GameObjects.Sprite {
+  keyboard: any;
+
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -14,13 +16,53 @@ class Player extends Phaser.GameObjects.Sprite {
       frameHeight: 64,
       frameWidth: 64
     });
+    this.keyboard;
   }
 
   init() {
     this.loadAnimations();
-    return this.scene.add.sprite(100, 100, "player", 0);
+    this.sprite = this.scene.physics.add.sprite(100, 100, "player", 0);
+
+    return this.sprite;
   }
 
+  handleKeyboardMovements() {
+    // RIGHT MOVEMENT ========================================
+    this.keyboard = this.scene.input.keyboard;
+    const keyboardKeys = this.keyboard.addKeys("W, A, S, D");
+
+    this.keyboard.on("keydown", (event: { key: any }) => {
+      switch (event.key) {
+        case "d": //right
+          this.sprite.setVelocityX(64);
+          this.sprite.play(`${this.sprite.texture.key}-right`, true);
+          break;
+        case "a": //left
+          this.sprite.setVelocityX(-64);
+          this.sprite.play(`${this.sprite.texture.key}-left`, true);
+          break;
+        case "w": //top
+          this.sprite.setVelocityY(-64);
+          this.sprite.play(`${this.sprite.texture.key}-top`, true);
+          break;
+        case "s": //bottom
+          this.sprite.setVelocityY(64);
+          this.sprite.play(`${this.sprite.texture.key}-bottom`, true);
+          break;
+      }
+    });
+
+    // on character stop.
+    this.keyboard.on("keyup", () => {
+      //set the sprite to the first animation frame (character standing)
+      this.sprite.setFrame(
+        this.sprite.anims.currentAnim.frames[0].textureFrame
+      );
+
+      this.sprite.anims.stop();
+      this.sprite.setVelocity(0);
+    });
+  }
   loadAnimations() {
     const directions = [
       { side: "top", start: 7, end: 8 },

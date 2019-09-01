@@ -184,12 +184,66 @@ function (_super) {
       frameWidth: 64
     });
 
+    _this.keyboard;
     return _this;
   }
 
   Player.prototype.init = function () {
     this.loadAnimations();
-    return this.scene.add.sprite(100, 100, "player", 0);
+    this.sprite = this.scene.physics.add.sprite(100, 100, "player", 0);
+    return this.sprite;
+  };
+
+  Player.prototype.handleKeyboardMovements = function () {
+    var _this = this; // RIGHT MOVEMENT ========================================
+
+
+    this.keyboard = this.scene.input.keyboard;
+    var keyboardKeys = this.keyboard.addKeys("W, A, S, D");
+    this.keyboard.on("keydown", function (event) {
+      switch (event.key) {
+        case "d":
+          //right
+          _this.sprite.setVelocityX(64);
+
+          _this.sprite.play(_this.sprite.texture.key + "-right", true);
+
+          break;
+
+        case "a":
+          //left
+          _this.sprite.setVelocityX(-64);
+
+          _this.sprite.play(_this.sprite.texture.key + "-left", true);
+
+          break;
+
+        case "w":
+          //top
+          _this.sprite.setVelocityY(-64);
+
+          _this.sprite.play(_this.sprite.texture.key + "-top", true);
+
+          break;
+
+        case "s":
+          //bottom
+          _this.sprite.setVelocityY(64);
+
+          _this.sprite.play(_this.sprite.texture.key + "-bottom", true);
+
+          break;
+      }
+    }); // on character stop.
+
+    this.keyboard.on("keyup", function () {
+      //set the sprite to the first animation frame (character standing)
+      _this.sprite.setFrame(_this.sprite.anims.currentAnim.frames[0].textureFrame);
+
+      _this.sprite.anims.stop();
+
+      _this.sprite.setVelocity(0);
+    });
   };
 
   Player.prototype.loadAnimations = function () {
@@ -300,25 +354,49 @@ function (_super) {
   }
 
   Creature.prototype.init = function () {
-    this.loadAnimations();
-    this.randomWalk();
-    this.sprite = this.scene.add.sprite(300, 300, "creatures", "blue-spectre_0");
+    this.loadAnimations(); // this.randomWalk();
+    // this.add
+    //   .tween(this.sprite.body.velocity)
+    //   .to({ y: -32 }, 1500, Phaser.Easing.Linear.None, true);
+
+    this.sprite = this.scene.physics.add.sprite(300, 300, "creatures", "blue-spectre_0");
     return this.sprite;
   };
 
   Creature.prototype.randomWalk = function () {
     var _this = this;
 
-    var n = Math.floor(Math.random() * 4);
-    console.log("starting creature random walk...");
     setInterval(function () {
-      console.log("animating..");
+      var n = Math.floor((Math.random() + 1) * 4);
+      var d = Math.floor(Math.random() * 4);
+      var directions = ["top", "right", "bottom", "left"];
 
-      _this.play("blue-spectre-bottom");
+      _this.sprite.play("blue-spectre-" + directions[d]);
 
-      _this.y += 32;
-    }, 1000);
+      console.log(d);
+      console.log("creature walking..." + directions[d]);
+      var movingTargetPixels = 32;
+
+      switch (directions[d]) {
+        case "top":
+          break;
+
+        case "right":
+          _this.sprite.x += 32;
+          break;
+
+        case "bottom":
+          _this.sprite.y += 32;
+          break;
+
+        case "left":
+          _this.sprite.x -= 32;
+          break;
+      }
+    }, 6000);
   };
+
+  Creature.prototype.smoothMove = function () {};
 
   Creature.prototype.loadAnimations = function () {
     var _this = this;
@@ -462,6 +540,10 @@ function (_super) {
     }, 1000);
     window.player = this.player.sprite; //this.scene.start(CST.SCENES.MENU, "hello from loadscene");
     //this.scene.launch();
+  };
+
+  WorldScene.prototype.update = function () {
+    this.player.handleKeyboardMovements();
   };
 
   return WorldScene;
