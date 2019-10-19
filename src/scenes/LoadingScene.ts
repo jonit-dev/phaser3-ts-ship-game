@@ -1,6 +1,6 @@
-import Scenes from '../constants/Scenes';
-import { Background } from '../resources/Background';
-import { Ship } from '../resources/Ship';
+import Scenes from "../constants/Scenes";
+import { Background } from "../resources/Background";
+import { Ship } from "../resources/Ship";
 
 export class LoadingScene extends Phaser.Scene {
   key: string;

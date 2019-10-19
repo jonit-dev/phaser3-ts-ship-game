@@ -1,6 +1,6 @@
-import Resources from '../constants/Resources';
-import { game } from '../Main';
-import { GameScene } from '../scenes/GameScene';
+import Resources from "../constants/Resources";
+import { game } from "../Main";
+import { GameScene } from "../scenes/GameScene";
 
 export enum ShipType {
   SmallShip = "SmallShip",
