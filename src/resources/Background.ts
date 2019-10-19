@@ -1,6 +1,6 @@
-import Resources from '../constants/Resources';
-import { game } from '../Main';
-import { GameScene } from '../scenes/GameScene';
+import { ShipResources } from "../constants/Ship.resources";
+import { game } from "../Main";
+import { GameScene } from "../scenes/GameScene";
 
 export class Background {
   graphic: Phaser.GameObjects.TileSprite;
@@ -10,7 +10,7 @@ export class Background {
       0,
       game.canvas.width,
       game.canvas.height,
-      Resources.Background.key
+      ShipResources.images.Background.key
     );
     this.graphic.setOrigin(0, 0);
     this.graphic.displayWidth = game.canvas.width;
@@ -19,8 +19,8 @@ export class Background {
 
   public static preload(loadingScene: any) {
     loadingScene.load.image(
-      Resources.Background.key,
-      Resources.Background.image
+      ShipResources.images.Background.key,
+      ShipResources.images.Background.image
     );
   }
   public update() {

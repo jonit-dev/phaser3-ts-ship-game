@@ -1,12 +1,7 @@
-import Resources from "../constants/Resources";
+import { ShipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
 import { GameScene } from "../scenes/GameScene";
-
-export enum ShipType {
-  SmallShip = "SmallShip",
-  AttackerShip = "AttackerShip",
-  MotherShip = "MotherShip"
-}
+import { ShipType } from "../types/Ship.types";
 
 export class Ship extends Phaser.GameObjects.Sprite {
   scene: GameScene;
@@ -41,9 +36,9 @@ export class Ship extends Phaser.GameObjects.Sprite {
       }, 3000);
     }
 
-    console.log(Resources[this.type].key);
+    // Graphic resources ========================================
 
-    this.resource = Resources[this.type];
+    this.resource = ShipResources.images[this.type];
 
     this.graphic = this.scene.add.sprite(
       this.initX,
@@ -56,6 +51,17 @@ export class Ship extends Phaser.GameObjects.Sprite {
     // this.image.flipY = true;
 
     this.initAnimations();
+
+    // Interactivity ========================================
+
+    this.graphic.setInteractive();
+    this.scene.input.on("gameobjectdown", this.destroyShip);
+  }
+
+  public destroyShip(pointer: any, gameObject: any) {
+    gameObject.setTexture(ShipResources.images.Explosion.key); //switch this sprite texture to the explosion one
+    gameObject.play(ShipResources.images.Explosion.key); //play animation
+    console.log("clicked me");
   }
 
   public initAnimations() {
@@ -72,8 +78,14 @@ export class Ship extends Phaser.GameObjects.Sprite {
     this.graphic.play(this.resource.key, true);
 
     this.scene.anims.create({
-      key: `explosion_anim`,
-      frames: this.scene.anims.generateFrameNumbers("explosion_anim", {}),
+      key: ShipResources.images.Explosion.key,
+      frames: this.scene.anims.generateFrameNumbers(
+        ShipResources.images.Explosion.key,
+        {
+          start: 0,
+          end: 4
+        }
+      ),
       frameRate: 20, //fps
       repeat: 0, //infinite loop
       hideOnComplete: true
@@ -87,8 +99,8 @@ export class Ship extends Phaser.GameObjects.Sprite {
     // loadScene.load.image(Images.MotherShip, Images.MotherShip);
 
     loadingScene.load.spritesheet(
-      Resources.SmallShip.key,
-      Resources.SmallShip.image,
+      ShipResources.images.SmallShip.key,
+      ShipResources.images.SmallShip.image,
       {
         frameWidth: 16,
         frameHeight: 16
@@ -96,8 +108,8 @@ export class Ship extends Phaser.GameObjects.Sprite {
     );
 
     loadingScene.load.spritesheet(
-      Resources.AttackerShip.key,
-      Resources.AttackerShip.image,
+      ShipResources.images.AttackerShip.key,
+      ShipResources.images.AttackerShip.image,
       {
         frameWidth: 32,
         frameHeight: 16
@@ -105,8 +117,8 @@ export class Ship extends Phaser.GameObjects.Sprite {
     );
 
     loadingScene.load.spritesheet(
-      Resources.MotherShip.key,
-      Resources.MotherShip.image,
+      ShipResources.images.MotherShip.key,
+      ShipResources.images.MotherShip.image,
       {
         frameWidth: 32,
         frameHeight: 32
@@ -114,8 +126,8 @@ export class Ship extends Phaser.GameObjects.Sprite {
     );
 
     loadingScene.load.spritesheet(
-      Resources.Explosion.key,
-      Resources.Explosion.image,
+      ShipResources.images.Explosion.key,
+      ShipResources.images.Explosion.image,
       {
         frameWidth: 16,
         frameHeight: 16

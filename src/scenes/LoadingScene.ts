@@ -12,6 +12,7 @@ export class LoadingScene extends Phaser.Scene {
   }
   init() {}
   preload() {
+    // GameAudio.preload(this);
     // Preload game assets
     Background.preload(this);
     Ship.preload(this); //preload ship assets on this loading scene

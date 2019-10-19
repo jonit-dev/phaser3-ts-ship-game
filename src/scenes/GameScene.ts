@@ -1,8 +1,9 @@
-import Resources from '../constants/Resources';
-import Scenes from '../constants/Scenes';
-import { game } from '../Main';
-import { Ship, ShipType } from '../resources/Ship';
-import { Background } from './../resources/Background';
+import Scenes from "../constants/Scenes";
+import { ShipResources } from "../constants/Ship.resources";
+import { game } from "../Main";
+import { Ship } from "../resources/Ship";
+import { ShipType } from "../types/Ship.types";
+import { Background } from "./../resources/Background";
 
 export class GameScene extends Phaser.Scene {
   background: Background;
@@ -18,13 +19,15 @@ export class GameScene extends Phaser.Scene {
   }
   init() {}
   create() {
+    // Sprites ========================================
+
     this.background = new Background(this);
 
     this.SmallShip = new Ship(
       this,
       game.canvas.width / 2,
       -50,
-      Resources.SmallShip.key,
+      ShipResources.images.SmallShip.key,
       0,
       ShipType.SmallShip
     );
@@ -33,7 +36,7 @@ export class GameScene extends Phaser.Scene {
       this,
       game.canvas.width / 2 + 50,
       -50,
-      Resources.AttackerShip.key,
+      ShipResources.images.AttackerShip.key,
       0,
       ShipType.AttackerShip
     );
@@ -42,7 +45,7 @@ export class GameScene extends Phaser.Scene {
       this,
       game.canvas.width / 2 + 50,
       -50,
-      Resources.MotherShip.key,
+      ShipResources.images.MotherShip.key,
       0,
       ShipType.MotherShip
     );
@@ -51,6 +54,12 @@ export class GameScene extends Phaser.Scene {
       font: "12px Arial",
       fill: "yellow"
     });
+
+    // Sounds ========================================
+    // const backgroundMusic = new GameAudio(this, [
+    //   ShipResources.InterGalatic.audio
+    // ]);
+    // backgroundMusic.play(ShipResources.InterGalatic.key);
   }
 
   update() {
