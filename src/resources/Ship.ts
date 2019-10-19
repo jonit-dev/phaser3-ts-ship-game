@@ -1,7 +1,6 @@
-import { game } from "../Main";
-import Images from "../constants/Images";
-import { GameScene } from "../scenes/GameScene";
-import { GameObjects } from "phaser";
+import Resources from '../constants/Resources';
+import { game } from '../Main';
+import { GameScene } from '../scenes/GameScene';
 
 export enum ShipType {
   SmallShip = "SmallShip",
@@ -9,24 +8,28 @@ export enum ShipType {
   MotherShip = "MotherShip"
 }
 
-export class Ship {
+export class Ship extends Phaser.GameObjects.Sprite {
   scene: GameScene;
   initX: number;
   initY: number;
-  graphic: Phaser.GameObjects.Image;
+  graphic: Phaser.GameObjects.Sprite;
   type: any;
   canMove: boolean | undefined;
   speed: number;
+
   constructor(
-    scene: GameScene,
-    initX: number,
-    initY: number,
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    frame: string | integer,
     type: ShipType,
     startMoving: boolean = true
   ) {
-    this.scene = scene;
-    this.initX = initX;
-    this.initY = initY;
+    super(scene, x, y, texture, frame);
+
+    this.initX = x;
+    this.initY = y;
     this.type = type;
     this.canMove = startMoving;
     this.speed = 0;
@@ -39,28 +42,97 @@ export class Ship {
 
     switch (this.type) {
       case ShipType.SmallShip:
-        this.graphic = this.scene.add.image(initX, initY, Images.SmallShip);
-        this.speed = 2;
+        this.graphic = this.scene.add.sprite(
+          this.initX,
+          this.initY,
+          Resources.SmallShip.key
+        );
+        this.speed = 1;
+
         break;
       case ShipType.AttackerShip:
-        this.graphic = this.scene.add.image(initX, initY, Images.AttackerShip);
-        this.speed = 3;
+        this.graphic = this.scene.add.sprite(
+          this.initX,
+          this.initY,
+          Resources.SmallShip.image
+        );
+        this.speed = 1.5;
         break;
       case ShipType.MotherShip:
-        this.graphic = this.scene.add.image(initX, initY, Images.MotherShip);
-        this.speed = 4.5;
+        this.graphic = this.scene.add.sprite(
+          this.initX,
+          this.initY,
+          Resources.SmallShip.image
+        );
+        this.speed = 3;
         break;
       default:
-        this.graphic = this.scene.add.image(initX, initY, Images.SmallShip);
+        this.graphic = this.scene.add.sprite(
+          this.initX,
+          this.initY,
+          Resources.SmallShip.image
+        );
     }
     // this.graphic.setScale(2);
     // this.image.flipY = true;
+
+    this.initAnimations();
   }
 
-  public static preload(loadScene: any) {
-    loadScene.load.image(Images.SmallShip, Images.SmallShip);
-    loadScene.load.image(Images.AttackerShip, Images.AttackerShip);
-    loadScene.load.image(Images.MotherShip, Images.MotherShip);
+  public initAnimations() {
+    const animKey = `${this.type}_anim`;
+
+    console.log("initializing animations");
+
+    this.scene.anims.create({
+      key: Resources.SmallShip.key,
+      frames: this.scene.anims.generateFrameNumbers(Resources.SmallShip.key, {
+        start: 0,
+        end: 1
+      }),
+      frameRate: 4, //fps
+      repeat: -1 //infinite loop
+    });
+
+    this.graphic.play(Resources.SmallShip.key, true);
+
+    this.scene.anims.create({
+      key: `explosion_anim`,
+      frames: this.scene.anims.generateFrameNumbers("explosion_anim", {}),
+      frameRate: 20, //fps
+      repeat: 0, //infinite loop
+      hideOnComplete: true
+    });
+  }
+
+  public static preload(loadingScene: any) {
+    console.log(`Preloading assets for ship`);
+    // loadingScene.load.image(Images.SmallShip, Images.SmallShip);
+    // loadScene.load.image(Images.AttackerShip, Images.AttackerShip);
+    // loadScene.load.image(Images.MotherShip, Images.MotherShip);
+
+    loadingScene.load.spritesheet(
+      Resources.SmallShip.key,
+      Resources.SmallShip.image,
+      {
+        frameWidth: 16,
+        frameHeight: 16
+      }
+    );
+
+    // loadingScene.load.spritesheet(Images.AttackerShip, Images.AttackerShip, {
+    //   frameWidth: 32,
+    //   frameHeight: 16
+    // });
+    // loadingScene.load.spritesheet(Images.MotherShip, Images.MotherShip, {
+    //   frameWidth: 32,
+    //   frameHeight: 32
+    // });
+
+    // loadingScene.load.spritesheet(Images.Explosion, Images.Explosion, {
+    //   frameWidth: 16,
+    //   frameHeight: 16
+    // });
   }
 
   public update() {

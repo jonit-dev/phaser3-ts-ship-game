@@ -1,6 +1,6 @@
-import Images from "../constants/Images";
-import { GameScene } from "../scenes/GameScene";
-import { game } from "../Main";
+import Resources from '../constants/Resources';
+import { game } from '../Main';
+import { GameScene } from '../scenes/GameScene';
 
 export class Background {
   graphic: Phaser.GameObjects.TileSprite;
@@ -10,15 +10,18 @@ export class Background {
       0,
       game.canvas.width,
       game.canvas.height,
-      Images.background
+      Resources.Background.key
     );
     this.graphic.setOrigin(0, 0);
     this.graphic.displayWidth = game.canvas.width;
     this.graphic.scaleY = this.graphic.scaleX;
   }
 
-  public static preload(loadScene: any) {
-    loadScene.load.image(Images.background, Images.background);
+  public static preload(loadingScene: any) {
+    loadingScene.load.image(
+      Resources.Background.key,
+      Resources.Background.image
+    );
   }
   public update() {
     this.graphic.tilePositionY -= 0.3;

@@ -1,8 +1,7 @@
-import { Background } from "./../resources/Background";
-import Scenes from "../constants/Scenes";
-import Images from "../constants/Images";
-import { game } from "../Main";
-import { Ship, ShipType } from "../resources/Ship";
+import Scenes from '../constants/Scenes';
+import { game } from '../Main';
+import { Ship, ShipType } from '../resources/Ship';
+import { Background } from './../resources/Background';
 
 export class GameScene extends Phaser.Scene {
   background: Background;
@@ -17,42 +16,43 @@ export class GameScene extends Phaser.Scene {
     });
   }
   init() {}
-  preload() {}
   create() {
     this.background = new Background(this);
 
     this.SmallShip = new Ship(
       this,
-      game.canvas.width / 2 - 150,
-      -50,
-      ShipType.SmallShip
-    );
-    this.AttackerShip = new Ship(
-      this,
       game.canvas.width / 2,
       -50,
-      ShipType.AttackerShip,
-      false
+      ShipType.SmallShip,
+      0,
+      ShipType.SmallShip
     );
+    // this.AttackerShip = new Ship(
+    //   this,
+    //   game.canvas.width / 2,
+    //   -50,
+    //   ShipType.AttackerShip,
+    //   false
+    // );
 
-    this.MotherShip = new Ship(
-      this,
-      game.canvas.width / 2 + 150,
-      -50,
-      ShipType.MotherShip,
-      false
-    );
+    // this.MotherShip = new Ship(
+    //   this,
+    //   game.canvas.width / 2 + 150,
+    //   -50,
+    //   ShipType.MotherShip,
+    //   false
+    // );
 
-    this.add.text(20, 20, "Playing game!", {
-      font: "25px Arial",
+    this.add.text(5, 5, "Score", {
+      font: "12px Arial",
       fill: "yellow"
     });
   }
 
   update() {
     this.SmallShip.update();
-    this.AttackerShip.update();
-    this.MotherShip.update();
+    // this.AttackerShip.update();
+    // this.MotherShip.update();
     this.background.update();
   }
 }
