@@ -17,7 +17,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Scenes_1 = __importDefault(require("../constants/Scenes"));
-var Images_1 = __importDefault(require("../constants/Images"));
+var Ship_resources_1 = require("../constants/Ship.resources");
+var Main_1 = require("../Main");
+var Audio_1 = require("../resources/Audio");
+var Ship_1 = require("../resources/Ship");
+var Ship_types_1 = require("../types/Ship.types");
+var Background_1 = require("./../resources/Background");
 var GameScene = /** @class */ (function (_super) {
     __extends(GameScene, _super);
     function GameScene() {
@@ -26,17 +31,27 @@ var GameScene = /** @class */ (function (_super) {
         }) || this;
     }
     GameScene.prototype.init = function () { };
-    GameScene.prototype.preload = function () {
-        this.load.image("background", Images_1.default.background);
-    };
     GameScene.prototype.create = function () {
-        this.background = this.add.image(0, 0, "background");
-        this.background.setOrigin(0, 0);
-        console.log("game scene");
-        this.add.text(20, 20, "Playing game!", {
-            font: "25px Arial",
+        // Sprites ========================================
+        this.background = new Background_1.Background(this);
+        this.SmallShip = new Ship_1.Ship(this, Main_1.game.canvas.width / 2, -50, Ship_resources_1.ShipResources.images.SmallShip.key, 0, Ship_types_1.ShipType.SmallShip);
+        this.AttackerShip = new Ship_1.Ship(this, Main_1.game.canvas.width / 2 + 50, -50, Ship_resources_1.ShipResources.images.AttackerShip.key, 0, Ship_types_1.ShipType.AttackerShip);
+        this.MotherShip = new Ship_1.Ship(this, Main_1.game.canvas.width / 2 + 50, -50, Ship_resources_1.ShipResources.images.MotherShip.key, 0, Ship_types_1.ShipType.MotherShip);
+        this.add.text(5, 5, "Score", {
+            font: "12px Arial",
             fill: "yellow"
         });
+        // Sounds ========================================
+        var backgroundMusic = new Audio_1.GameAudio(this, [
+            Ship_resources_1.ShipResources.sounds.InterGalatic.path
+        ]);
+        backgroundMusic.play(Ship_resources_1.ShipResources.sounds.InterGalatic.key);
+    };
+    GameScene.prototype.update = function () {
+        this.SmallShip.update();
+        this.AttackerShip.update();
+        this.MotherShip.update();
+        this.background.update();
     };
     return GameScene;
 }(Phaser.Scene));

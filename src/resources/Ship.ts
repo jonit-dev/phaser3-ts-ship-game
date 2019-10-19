@@ -94,13 +94,18 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
   public static preload(loadingScene: any) {
     console.log(`Preloading assets for ship`);
-    // loadingScene.load.image(Images.SmallShip, Images.SmallShip);
-    // loadScene.load.image(Images.AttackerShip, Images.AttackerShip);
-    // loadScene.load.image(Images.MotherShip, Images.MotherShip);
+
+    // Audio
+
+    loadingScene.load.audio(ShipResources.sounds.ShipExplosion.key, [
+      ShipResources.sounds.ShipExplosion.path
+    ]);
+
+    // Images ========================================
 
     loadingScene.load.spritesheet(
       ShipResources.images.SmallShip.key,
-      ShipResources.images.SmallShip.image,
+      ShipResources.images.SmallShip.path,
       {
         frameWidth: 16,
         frameHeight: 16
@@ -109,7 +114,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
     loadingScene.load.spritesheet(
       ShipResources.images.AttackerShip.key,
-      ShipResources.images.AttackerShip.image,
+      ShipResources.images.AttackerShip.path,
       {
         frameWidth: 32,
         frameHeight: 16
@@ -118,7 +123,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
     loadingScene.load.spritesheet(
       ShipResources.images.MotherShip.key,
-      ShipResources.images.MotherShip.image,
+      ShipResources.images.MotherShip.path,
       {
         frameWidth: 32,
         frameHeight: 32
@@ -127,7 +132,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
     loadingScene.load.spritesheet(
       ShipResources.images.Explosion.key,
-      ShipResources.images.Explosion.image,
+      ShipResources.images.Explosion.path,
       {
         frameWidth: 16,
         frameHeight: 16

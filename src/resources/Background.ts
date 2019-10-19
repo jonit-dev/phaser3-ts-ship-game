@@ -20,8 +20,13 @@ export class Background {
   public static preload(loadingScene: any) {
     loadingScene.load.image(
       ShipResources.images.Background.key,
-      ShipResources.images.Background.image
+      ShipResources.images.Background.path
     );
+
+    // Ambience music
+    loadingScene.load.audio(ShipResources.sounds.InterGalatic.key, [
+      ShipResources.sounds.InterGalatic.path
+    ]);
   }
   public update() {
     this.graphic.tilePositionY -= 0.3;

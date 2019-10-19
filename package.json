@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "rm -r ./dist/assets && mkdir ./dist/assets && cp -r ./src/assets/* ./dist/assets && parcel serve index.html",
+    "dev": "parcel serve index.html",
+    "build": "rm -r ./dist/assets && mkdir ./dist/assets && cp -r ./src/assets/* ./dist/assets && parcel serve index.html",
     "build-assets": "cp -r ./src/assets/* ./dist/assets"
   },
   "author": "",

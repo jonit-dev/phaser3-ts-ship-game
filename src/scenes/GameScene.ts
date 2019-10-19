@@ -56,10 +56,8 @@ export class GameScene extends Phaser.Scene {
     });
 
     // Sounds ========================================
-    // const backgroundMusic = new GameAudio(this, [
-    //   ShipResources.InterGalatic.audio
-    // ]);
-    // backgroundMusic.play(ShipResources.InterGalatic.key);
+    const ambienceMusic = this.sound.add(ShipResources.sounds.InterGalatic.key);
+    ambienceMusic.play();
   }
 
   update() {

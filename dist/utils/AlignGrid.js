@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var main_1 = require("../main");
+var Main_1 = require("../Main");
 var AlignGrid = /** @class */ (function () {
     function AlignGrid(config) {
         if (!config.scene) {
@@ -14,10 +14,10 @@ var AlignGrid = /** @class */ (function () {
             config.cols = 3;
         }
         if (!config.width) {
-            config.width = main_1.game.config.width;
+            config.width = Main_1.game.config.width;
         }
         if (!config.height) {
-            config.height = main_1.game.config.height;
+            config.height = Main_1.game.config.height;
         }
         this.h = config.height;
         this.w = config.width;
