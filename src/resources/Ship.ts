@@ -59,8 +59,6 @@ export class Ship extends Phaser.GameObjects.Sprite {
   }
 
   public initAnimations() {
-    const animKey = `${this.type}_anim`;
-
     this.scene.anims.create({
       key: this.resource.key,
       frames: this.scene.anims.generateFrameNumbers(this.resource.key, {
