@@ -2,20 +2,21 @@ export default {
   SmallShip: {
     key: "SmallShip",
     image: "./assets/ship.png",
-    speed: 1.5
+    speed: 0.5
   },
   AttackerShip: {
     key: "AttackerShip",
     image: "./assets/ship2.png",
-    speed: 2
+    speed: 1
   },
   MotherShip: {
     key: "MotherShip",
     image: "./assets/ship3.png",
-    speed: 3
+    speed: 1.3
   },
   Explosion: {
-    key: "Explosion"
+    key: "Explosion",
+    image: "./assets/explosion.png"
   },
   Background: {
     key: "Background",

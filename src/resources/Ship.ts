@@ -16,6 +16,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
   type: any;
   canMove: boolean | undefined;
   speed: number;
+  resource: any;
 
   constructor(
     scene: Phaser.Scene,
@@ -40,39 +41,17 @@ export class Ship extends Phaser.GameObjects.Sprite {
       }, 3000);
     }
 
-    switch (this.type) {
-      case ShipType.SmallShip:
-        this.graphic = this.scene.add.sprite(
-          this.initX,
-          this.initY,
-          Resources.SmallShip.key
-        );
-        this.speed = 1;
+    console.log(Resources[this.type].key);
 
-        break;
-      case ShipType.AttackerShip:
-        this.graphic = this.scene.add.sprite(
-          this.initX,
-          this.initY,
-          Resources.SmallShip.image
-        );
-        this.speed = 1.5;
-        break;
-      case ShipType.MotherShip:
-        this.graphic = this.scene.add.sprite(
-          this.initX,
-          this.initY,
-          Resources.SmallShip.image
-        );
-        this.speed = 3;
-        break;
-      default:
-        this.graphic = this.scene.add.sprite(
-          this.initX,
-          this.initY,
-          Resources.SmallShip.image
-        );
-    }
+    this.resource = Resources[this.type];
+
+    this.graphic = this.scene.add.sprite(
+      this.initX,
+      this.initY,
+      this.resource.key
+    );
+    this.speed = this.resource.speed;
+
     // this.graphic.setScale(2);
     // this.image.flipY = true;
 
@@ -82,11 +61,9 @@ export class Ship extends Phaser.GameObjects.Sprite {
   public initAnimations() {
     const animKey = `${this.type}_anim`;
 
-    console.log("initializing animations");
-
     this.scene.anims.create({
-      key: Resources.SmallShip.key,
-      frames: this.scene.anims.generateFrameNumbers(Resources.SmallShip.key, {
+      key: this.resource.key,
+      frames: this.scene.anims.generateFrameNumbers(this.resource.key, {
         start: 0,
         end: 1
       }),
@@ -94,7 +71,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
       repeat: -1 //infinite loop
     });
 
-    this.graphic.play(Resources.SmallShip.key, true);
+    this.graphic.play(this.resource.key, true);
 
     this.scene.anims.create({
       key: `explosion_anim`,
@@ -120,19 +97,32 @@ export class Ship extends Phaser.GameObjects.Sprite {
       }
     );
 
-    // loadingScene.load.spritesheet(Images.AttackerShip, Images.AttackerShip, {
-    //   frameWidth: 32,
-    //   frameHeight: 16
-    // });
-    // loadingScene.load.spritesheet(Images.MotherShip, Images.MotherShip, {
-    //   frameWidth: 32,
-    //   frameHeight: 32
-    // });
+    loadingScene.load.spritesheet(
+      Resources.AttackerShip.key,
+      Resources.AttackerShip.image,
+      {
+        frameWidth: 32,
+        frameHeight: 16
+      }
+    );
 
-    // loadingScene.load.spritesheet(Images.Explosion, Images.Explosion, {
-    //   frameWidth: 16,
-    //   frameHeight: 16
-    // });
+    loadingScene.load.spritesheet(
+      Resources.MotherShip.key,
+      Resources.MotherShip.image,
+      {
+        frameWidth: 32,
+        frameHeight: 32
+      }
+    );
+
+    loadingScene.load.spritesheet(
+      Resources.Explosion.key,
+      Resources.Explosion.image,
+      {
+        frameWidth: 16,
+        frameHeight: 16
+      }
+    );
   }
 
   public update() {
@@ -154,6 +144,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
     if (this.canMove) {
       this.graphic.y += this.speed;
 
+      // move back to the beginning when out of screen (random X axis)
       if (this.isOutScreen()) {
         const randomXAxis = Math.random() * game.canvas.width;
 
