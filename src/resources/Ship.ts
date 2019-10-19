@@ -62,6 +62,11 @@ export class Ship extends Phaser.GameObjects.Sprite {
     gameObject.setTexture(ShipResources.images.Explosion.key); //switch this sprite texture to the explosion one
     gameObject.play(ShipResources.images.Explosion.key); //play animation
     console.log("clicked me");
+
+    const explosionSound = this.scene.sound.add(
+      ShipResources.sounds.ShipExplosion.key
+    );
+    explosionSound.play();
   }
 
   public initAnimations() {
