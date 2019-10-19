@@ -1,3 +1,4 @@
 export default {
-  WorldScene: "WorldScene"
+  LoadingScene: "LoadingScene",
+  GameScene: "GameScene"
 };

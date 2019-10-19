@@ -1,4 +1,4 @@
-import { game } from "../main";
+import { game } from "../Main";
 
 interface IGridConfig {
   scene: any;

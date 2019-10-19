@@ -8,13 +8,14 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "parcel serve index.html"
+    "dev": "cp ./src/assets/* ./dist/assets && parcel serve index.html",
+    "build-assets": "cp ./src/assets/* ./dist/assets"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@develephant/types-phaser": "^1.0.1",
-    "phaser": "^3.19.0",
+    "phaser": "^3.20.1",
     "underscore": "^1.9.1"
   }
 }
