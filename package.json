@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@develephant/types-phaser": "^1.0.1",
     "phaser": "^3.19.0",
     "underscore": "^1.9.1"
   }

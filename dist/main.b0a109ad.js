@@ -190,7 +190,7 @@ function (_super) {
 
   Player.prototype.init = function () {
     this.loadAnimations();
-    this.sprite = this.scene.physics.add.sprite(100, 100, "player", 0);
+    this.sprite = this.scene.physics.add.sprite(0, 0, "player", 0);
     return this.sprite;
   };
 
@@ -450,7 +450,111 @@ function (_super) {
 }(Phaser.GameObjects.Sprite);
 
 exports.default = Creature;
-},{}],"src/scenes/WorldScene.ts":[function(require,module,exports) {
+},{}],"src/utils/AlignGrid.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var main_1 = require("../main");
+
+var AlignGrid =
+/** @class */
+function () {
+  function AlignGrid(config) {
+    if (!config.scene) {
+      console.log("missing scene!");
+      return;
+    }
+
+    if (!config.rows) {
+      config.rows = 3;
+    }
+
+    if (!config.cols) {
+      config.cols = 3;
+    }
+
+    if (!config.width) {
+      config.width = main_1.game.config.width;
+    }
+
+    if (!config.height) {
+      config.height = main_1.game.config.height;
+    }
+
+    this.h = config.height;
+    this.w = config.width;
+    this.rows = config.rows;
+    this.cols = config.cols;
+    this.scene = config.scene; //cw cell width is the scene width divided by the number of columns
+
+    this.cw = this.w / this.cols; //ch cell height is the scene height divided the number of rows
+
+    this.ch = this.h / this.rows;
+  } //place an object in relation to the grid
+
+
+  AlignGrid.prototype.placeAt = function (xx, yy, obj) {
+    //calculate the center of the cell
+    //by adding half of the height and width
+    //to the x and y of the coordinates
+    var x2 = this.cw * xx + this.cw / 2;
+    var y2 = this.ch * yy + this.ch / 2;
+    obj.x = x2;
+    obj.y = y2;
+  };
+
+  AlignGrid.prototype.show = function (a) {
+    if (a === void 0) {
+      a = 1;
+    }
+
+    this.graphics = this.scene.add.graphics();
+    this.graphics.lineStyle(4, 0xff0000, a); //
+    //
+    //this.graphics.beginPath();
+
+    for (var i = 0; i < this.w; i += this.cw) {
+      this.graphics.moveTo(i, 0);
+      this.graphics.lineTo(i, this.h);
+    }
+
+    for (var i = 0; i < this.h; i += this.ch) {
+      this.graphics.moveTo(0, i);
+      this.graphics.lineTo(this.w, i);
+    }
+
+    this.graphics.strokePath();
+  }; //create a visual representation of the grid
+
+
+  AlignGrid.prototype.showNumbers = function (a) {
+    if (a === void 0) {
+      a = 1;
+    }
+
+    this.show(a);
+    var n = 0;
+
+    for (var i = 0; i < this.rows; i++) {
+      for (var j = 0; j < this.cols; j++) {
+        var numText = this.scene.add.text(0, 0, n, {
+          color: "red"
+        });
+        numText.setOrigin(0.5, 0.5);
+        this.placeAt(j, i, numText);
+        n++;
+      }
+    }
+  };
+
+  return AlignGrid;
+}();
+
+exports.default = AlignGrid;
+},{"../main":"src/main.ts"}],"src/scenes/WorldScene.ts":[function(require,module,exports) {
 "use strict";
 
 var __extends = this && this.__extends || function () {
@@ -497,6 +601,10 @@ var World_1 = __importDefault(require("../resources/World"));
 
 var Creature_1 = __importDefault(require("../resources/Creature"));
 
+var AlignGrid_1 = __importDefault(require("../utils/AlignGrid"));
+
+var main_1 = require("../main");
+
 var WorldScene =
 /** @class */
 function (_super) {
@@ -526,12 +634,21 @@ function (_super) {
 
     this.world.background = this.add.image(0, 0, "background");
     this.world.background.setOrigin(0, 0);
-    this.add.text(20, 20, "Britannia Online - Client", {
+    this.aGrid = new AlignGrid_1.default({
+      scene: this,
+      cols: 5,
+      rows: 5
+    });
+    this.aGrid.showNumbers();
+    this.add.text(0, 0, "Britannia Online - Client", {
       font: "25px Arial",
       fill: "yellow"
     }); //load sprites
 
     this.player.sprite = this.player.init();
+    this.aGrid.placeAt(2, 2, this.player.sprite);
+    this.player.sprite.displayWidth = main_1.game.config.width / 5;
+    this.player.sprite.scaleY = this.player.sprite.scaleX;
     this.blueSpectre.sprite = this.blueSpectre.init();
     setTimeout(function () {
       _this.blueSpectre.sprite.play("blue-spectre-bottom");
@@ -550,9 +667,8 @@ function (_super) {
 }(Phaser.Scene);
 
 exports.WorldScene = WorldScene;
-},{"../CST":"src/CST.ts","../resources/Player":"src/resources/Player.ts","../resources/World":"src/resources/World.ts","../resources/Creature":"src/resources/Creature.ts"}],"src/main.ts":[function(require,module,exports) {
+},{"../CST":"src/CST.ts","../resources/Player":"src/resources/Player.ts","../resources/World":"src/resources/World.ts","../resources/Creature":"src/resources/Creature.ts","../utils/AlignGrid":"src/utils/AlignGrid.ts","../main":"src/main.ts"}],"src/main.ts":[function(require,module,exports) {
 "use strict";
-/** @type {import("../typings/phaser")} */
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -560,14 +676,14 @@ Object.defineProperty(exports, "__esModule", {
 
 var WorldScene_1 = require("./scenes/WorldScene");
 
-var game = new Phaser.Game({
+exports.game = new Phaser.Game({
   type: Phaser.AUTO,
-  width: 1080,
-  height: 1920,
   scene: [WorldScene_1.WorldScene],
   backgroundColor: 0x000000,
+  width: 1024,
+  height: 768,
   render: {
-    pixelArt: true
+    pixelArt: false
   },
   physics: {
     default: "arcade",
@@ -604,7 +720,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45143" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38475" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

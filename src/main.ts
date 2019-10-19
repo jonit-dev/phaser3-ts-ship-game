@@ -1,16 +1,15 @@
-/** @type {import("../typings/phaser")} */
-
 import { WorldScene } from "./scenes/WorldScene";
 
-let game = new Phaser.Game({
+export const game = new Phaser.Game({
   type: Phaser.AUTO,
-  width: 1080,
-  height: 1920,
   scene: [WorldScene],
   backgroundColor: 0x000000,
+  width: 1024,
+  height: 768,
   render: {
-    pixelArt: true
+    pixelArt: false
   },
+
   physics: {
     default: "arcade",
     arcade: {

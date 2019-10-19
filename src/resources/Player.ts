@@ -19,14 +19,14 @@ class Player extends Phaser.GameObjects.Sprite {
     this.keyboard;
   }
 
-  init() {
+  public init() {
     this.loadAnimations();
-    this.sprite = this.scene.physics.add.sprite(100, 100, "player", 0);
+    this.sprite = this.scene.physics.add.sprite(0, 0, "player", 0);
 
     return this.sprite;
   }
 
-  handleKeyboardMovements() {
+  public handleKeyboardMovements() {
     // RIGHT MOVEMENT ========================================
     this.keyboard = this.scene.input.keyboard;
     const keyboardKeys = this.keyboard.addKeys("W, A, S, D");
@@ -63,7 +63,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.sprite.setVelocity(0);
     });
   }
-  loadAnimations() {
+  public loadAnimations() {
     const directions = [
       { side: "top", start: 7, end: 8 },
       { side: "right", start: 4, end: 5 },
