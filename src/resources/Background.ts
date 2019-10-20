@@ -1,4 +1,5 @@
-import { ShipResources } from "../constants/Ship.resources";
+import { env } from "../constants/Env";
+import { shipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
 import { GameScene } from "../scenes/GameScene";
 
@@ -10,7 +11,7 @@ export class Background {
       0,
       game.canvas.width,
       game.canvas.height,
-      ShipResources.images.Background.key
+      shipResources.images.background.key
     );
     this.graphic.setOrigin(0, 0);
     this.graphic.displayWidth = game.canvas.width;
@@ -19,14 +20,16 @@ export class Background {
 
   public static preload(loadingScene: any) {
     loadingScene.load.image(
-      ShipResources.images.Background.key,
-      ShipResources.images.Background.path
+      shipResources.images.background.key,
+      shipResources.images.background.path
     );
 
     // Ambience music
-    loadingScene.load.audio(ShipResources.sounds.InterGalatic.key, [
-      ShipResources.sounds.InterGalatic.path
-    ]);
+    if (!env.debug) {
+      loadingScene.load.audio(shipResources.sounds.interGalatic.key, [
+        shipResources.sounds.interGalatic.path
+      ]);
+    }
   }
   public update() {
     this.graphic.tilePositionY -= 0.3;

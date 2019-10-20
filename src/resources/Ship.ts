@@ -1,4 +1,4 @@
-import { ShipResources } from "../constants/Ship.resources";
+import { shipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
 import { GameScene } from "../scenes/GameScene";
 import { ShipType } from "../types/Ship.types";
@@ -38,7 +38,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
     // Graphic resources ========================================
 
-    this.resource = ShipResources.images[this.type];
+    this.resource = shipResources.images[this.type];
 
     this.graphic = this.scene.add.sprite(
       this.initX,
@@ -59,12 +59,12 @@ export class Ship extends Phaser.GameObjects.Sprite {
   }
 
   public destroyShip(pointer: any, gameObject: any) {
-    gameObject.setTexture(ShipResources.images.Explosion.key); //switch this sprite texture to the explosion one
-    gameObject.play(ShipResources.images.Explosion.key); //play animation
+    gameObject.setTexture(shipResources.images.explosion.key); //switch this sprite texture to the explosion one
+    gameObject.play(shipResources.images.explosion.key); //play animation
     console.log("clicked me");
 
     const explosionSound = this.scene.sound.add(
-      ShipResources.sounds.ShipExplosion.key
+      shipResources.sounds.shipExplosion.key
     );
     explosionSound.play();
   }
@@ -83,9 +83,9 @@ export class Ship extends Phaser.GameObjects.Sprite {
     this.graphic.play(this.resource.key, true);
 
     this.scene.anims.create({
-      key: ShipResources.images.Explosion.key,
+      key: shipResources.images.explosion.key,
       frames: this.scene.anims.generateFrameNumbers(
-        ShipResources.images.Explosion.key,
+        shipResources.images.explosion.key,
         {
           start: 0,
           end: 4
@@ -98,19 +98,17 @@ export class Ship extends Phaser.GameObjects.Sprite {
   }
 
   public static preload(loadingScene: any) {
-    console.log(`Preloading assets for ship`);
-
     // Audio
 
-    loadingScene.load.audio(ShipResources.sounds.ShipExplosion.key, [
-      ShipResources.sounds.ShipExplosion.path
+    loadingScene.load.audio(shipResources.sounds.shipExplosion.key, [
+      shipResources.sounds.shipExplosion.path
     ]);
 
     // Images ========================================
 
     loadingScene.load.spritesheet(
-      ShipResources.images.SmallShip.key,
-      ShipResources.images.SmallShip.path,
+      shipResources.images.smallShip.key,
+      shipResources.images.smallShip.path,
       {
         frameWidth: 16,
         frameHeight: 16
@@ -118,8 +116,8 @@ export class Ship extends Phaser.GameObjects.Sprite {
     );
 
     loadingScene.load.spritesheet(
-      ShipResources.images.AttackerShip.key,
-      ShipResources.images.AttackerShip.path,
+      shipResources.images.attackerShip.key,
+      shipResources.images.attackerShip.path,
       {
         frameWidth: 32,
         frameHeight: 16
@@ -127,8 +125,8 @@ export class Ship extends Phaser.GameObjects.Sprite {
     );
 
     loadingScene.load.spritesheet(
-      ShipResources.images.MotherShip.key,
-      ShipResources.images.MotherShip.path,
+      shipResources.images.motherShip.key,
+      shipResources.images.motherShip.path,
       {
         frameWidth: 32,
         frameHeight: 32
@@ -136,8 +134,8 @@ export class Ship extends Phaser.GameObjects.Sprite {
     );
 
     loadingScene.load.spritesheet(
-      ShipResources.images.Explosion.key,
-      ShipResources.images.Explosion.path,
+      shipResources.images.explosion.key,
+      shipResources.images.explosion.path,
       {
         frameWidth: 16,
         frameHeight: 16

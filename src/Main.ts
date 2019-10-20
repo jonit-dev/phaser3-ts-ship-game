@@ -1,6 +1,7 @@
 import Phaser from "phaser";
-import { LoadingScene } from "./scenes/LoadingScene";
+
 import { GameScene } from "./scenes/GameScene";
+import { LoadingScene } from "./scenes/LoadingScene";
 
 export const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -15,11 +16,11 @@ export const game = new Phaser.Game({
     mode: Phaser.Scale.FIT,
     width: 256,
     height: 272
+  },
+  physics: {
+    default: "arcade",
+    arcade: {
+      debug: false
+    }
   }
-  // physics: {
-  //   default: "arcade",
-  //   arcade: {
-  //     debug: true
-  //   }
-  // }
 });
