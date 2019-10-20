@@ -14,8 +14,8 @@ export const game = new Phaser.Game({
   scale: {
     parent: "game",
     mode: Phaser.Scale.FIT,
-    width: 288,
-    height: 288
+    width: 256,
+    height: 272
   },
   physics: {
     default: "arcade",

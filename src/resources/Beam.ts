@@ -21,21 +21,22 @@ export class Beam extends Phaser.GameObjects.Sprite {
     this.initX = x;
     this.initY = y;
 
-    // Graphic resources ====================================
+    // Sprites ====================================
     this.spriteBody = this.scene.physics.add.sprite(
       this.initX,
       this.initY,
       playerResources.images.shipBeam.key
     );
-    this.initAnimations();
 
     // physics ========================================
 
-    this.scene.physics.world.enableBody(this);
-    // this.scene.add.existing(this);
-    // this.body.setGravityY(0);
-    // this.body.setBounceY(0.2);
+    this.scene.beams.add(this.spriteBody);
+
+    // physics ========================================
+
     this.spriteBody.setVelocity(0, -100);
+
+    this.initAnimations();
   }
 
   public initAnimations() {

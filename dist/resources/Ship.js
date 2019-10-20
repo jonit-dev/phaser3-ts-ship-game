@@ -25,27 +25,32 @@ var Ship = /** @class */ (function (_super) {
         _this.type = type;
         _this.canMove = startMoving;
         _this.speed = 0;
+        _this.isDestroyed = false;
         if (!_this.canMove) {
             setTimeout(function () {
                 _this.canMove = true;
             }, 3000);
         }
         // Graphic resources ========================================
-        _this.resource = Ship_resources_1.ShipResources.images[_this.type];
-        _this.graphic = _this.scene.add.sprite(_this.initX, _this.initY, _this.resource.key);
+        _this.resource = Ship_resources_1.shipResources.images[_this.type];
+        _this.spriteBody = _this.scene.physics.add.sprite(_this.initX, _this.initY, _this.resource.key);
+        _this.scene.enemies.add(_this.spriteBody);
         _this.speed = _this.resource.speed;
         // this.graphic.setScale(2);
         // this.image.flipY = true;
         _this.initAnimations();
+        // Physics ========================================
         // Interactivity ========================================
-        _this.graphic.setInteractive();
-        _this.scene.input.on("gameobjectdown", _this.destroyShip);
+        _this.spriteBody.setInteractive();
+        _this.scene.input.on("gameobjectdown", _this.onClickDestroyShip);
         return _this;
     }
-    Ship.prototype.destroyShip = function (pointer, gameObject) {
-        gameObject.setTexture(Ship_resources_1.ShipResources.images.Explosion.key); //switch this sprite texture to the explosion one
-        gameObject.play(Ship_resources_1.ShipResources.images.Explosion.key); //play animation
+    Ship.prototype.onClickDestroyShip = function (pointer, gameObject) {
+        gameObject.setTexture(Ship_resources_1.shipResources.images.explosion.key); //switch this sprite texture to the explosion one
+        gameObject.play(Ship_resources_1.shipResources.images.explosion.key); //play animation
         console.log("clicked me");
+        var explosionSound = this.scene.sound.add(Ship_resources_1.shipResources.sounds.shipExplosion.key);
+        explosionSound.play();
     };
     Ship.prototype.initAnimations = function () {
         this.scene.anims.create({
@@ -57,10 +62,10 @@ var Ship = /** @class */ (function (_super) {
             frameRate: 4,
             repeat: -1 //infinite loop
         });
-        this.graphic.play(this.resource.key, true);
+        this.spriteBody.play(this.resource.key, true);
         this.scene.anims.create({
-            key: Ship_resources_1.ShipResources.images.Explosion.key,
-            frames: this.scene.anims.generateFrameNumbers(Ship_resources_1.ShipResources.images.Explosion.key, {
+            key: Ship_resources_1.shipResources.images.explosion.key,
+            frames: this.scene.anims.generateFrameNumbers(Ship_resources_1.shipResources.images.explosion.key, {
                 start: 0,
                 end: 4
             }),
@@ -70,23 +75,24 @@ var Ship = /** @class */ (function (_super) {
         });
     };
     Ship.preload = function (loadingScene) {
-        console.log("Preloading assets for ship");
-        // loadingScene.load.image(Images.SmallShip, Images.SmallShip);
-        // loadScene.load.image(Images.AttackerShip, Images.AttackerShip);
-        // loadScene.load.image(Images.MotherShip, Images.MotherShip);
-        loadingScene.load.spritesheet(Ship_resources_1.ShipResources.images.SmallShip.key, Ship_resources_1.ShipResources.images.SmallShip.path, {
+        // Audio
+        loadingScene.load.audio(Ship_resources_1.shipResources.sounds.shipExplosion.key, [
+            Ship_resources_1.shipResources.sounds.shipExplosion.path
+        ]);
+        // Images ========================================
+        loadingScene.load.spritesheet(Ship_resources_1.shipResources.images.smallShip.key, Ship_resources_1.shipResources.images.smallShip.path, {
             frameWidth: 16,
             frameHeight: 16
         });
-        loadingScene.load.spritesheet(Ship_resources_1.ShipResources.images.AttackerShip.key, Ship_resources_1.ShipResources.images.AttackerShip.path, {
+        loadingScene.load.spritesheet(Ship_resources_1.shipResources.images.attackerShip.key, Ship_resources_1.shipResources.images.attackerShip.path, {
             frameWidth: 32,
             frameHeight: 16
         });
-        loadingScene.load.spritesheet(Ship_resources_1.ShipResources.images.MotherShip.key, Ship_resources_1.ShipResources.images.MotherShip.path, {
+        loadingScene.load.spritesheet(Ship_resources_1.shipResources.images.motherShip.key, Ship_resources_1.shipResources.images.motherShip.path, {
             frameWidth: 32,
             frameHeight: 32
         });
-        loadingScene.load.spritesheet(Ship_resources_1.ShipResources.images.Explosion.key, Ship_resources_1.ShipResources.images.Explosion.path, {
+        loadingScene.load.spritesheet(Ship_resources_1.shipResources.images.explosion.key, Ship_resources_1.shipResources.images.explosion.path, {
             frameWidth: 16,
             frameHeight: 16
         });
@@ -96,22 +102,22 @@ var Ship = /** @class */ (function (_super) {
     };
     Ship.prototype.isOutScreen = function () {
         //50 is a little bit of margin...
-        if (this.graphic.x >= Main_1.game.canvas.width + 50) {
+        if (this.spriteBody.x >= Main_1.game.canvas.width + 50) {
             return true;
         }
-        if (this.graphic.y >= Main_1.game.canvas.height + 50) {
+        if (this.spriteBody.y >= Main_1.game.canvas.height + 50) {
             return true;
         }
         return false;
     };
     Ship.prototype.moveShip = function () {
         if (this.canMove) {
-            this.graphic.y += this.speed;
+            this.spriteBody.y += this.speed;
             // move back to the beginning when out of screen (random X axis)
             if (this.isOutScreen()) {
                 var randomXAxis = Math.random() * Main_1.game.canvas.width;
-                this.graphic.x = this.initX - randomXAxis;
-                this.graphic.y = this.initY - 50;
+                this.spriteBody.x = this.initX - randomXAxis;
+                this.spriteBody.y = this.initY - 50;
             }
         }
     };

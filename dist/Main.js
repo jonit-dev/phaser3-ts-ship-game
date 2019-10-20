@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var phaser_1 = __importDefault(require("phaser"));
-var LoadingScene_1 = require("./scenes/LoadingScene");
 var GameScene_1 = require("./scenes/GameScene");
+var LoadingScene_1 = require("./scenes/LoadingScene");
 exports.game = new phaser_1.default.Game({
     type: phaser_1.default.AUTO,
     scene: [LoadingScene_1.LoadingScene, GameScene_1.GameScene],
@@ -18,11 +18,11 @@ exports.game = new phaser_1.default.Game({
         mode: phaser_1.default.Scale.FIT,
         width: 256,
         height: 272
+    },
+    physics: {
+        default: "arcade",
+        arcade: {
+            debug: true
+        }
     }
-    // physics: {
-    //   default: "arcade",
-    //   arcade: {
-    //     debug: true
-    //   }
-    // }
 });

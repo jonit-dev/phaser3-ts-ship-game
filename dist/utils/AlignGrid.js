@@ -19,6 +19,7 @@ var AlignGrid = /** @class */ (function () {
         if (!config.height) {
             config.height = Main_1.game.config.height;
         }
+        this.config = config;
         this.h = config.height;
         this.w = config.width;
         this.rows = config.rows;
@@ -38,6 +39,11 @@ var AlignGrid = /** @class */ (function () {
         var y2 = this.ch * yy + this.ch / 2;
         obj.x = x2;
         obj.y = y2;
+    };
+    AlignGrid.prototype.placeAtIndex = function (index, obj) {
+        var yy = Math.floor(index / this.config.cols);
+        var xx = index - yy * this.config.cols;
+        this.placeAt(xx, yy, obj);
     };
     AlignGrid.prototype.show = function (a) {
         if (a === void 0) { a = 1; }

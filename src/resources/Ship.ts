@@ -7,11 +7,12 @@ export class Ship extends Phaser.GameObjects.Sprite {
   scene: GameScene;
   initX: number;
   initY: number;
-  graphic: Phaser.GameObjects.Sprite;
+  spriteBody: Phaser.Physics.Arcade.Sprite;
   type: any;
   canMove: boolean | undefined;
   speed: number;
   resource: any;
+  isDestroyed: boolean;
 
   constructor(
     scene: Phaser.Scene,
@@ -23,12 +24,12 @@ export class Ship extends Phaser.GameObjects.Sprite {
     startMoving: boolean = true
   ) {
     super(scene, x, y, texture, frame);
-
     this.initX = x;
     this.initY = y;
     this.type = type;
     this.canMove = startMoving;
     this.speed = 0;
+    this.isDestroyed = false;
 
     if (!this.canMove) {
       setTimeout(() => {
@@ -40,11 +41,13 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
     this.resource = shipResources.images[this.type];
 
-    this.graphic = this.scene.add.sprite(
+    this.spriteBody = this.scene.physics.add.sprite(
       this.initX,
       this.initY,
       this.resource.key
     );
+    this.scene.enemies.add(this.spriteBody);
+
     this.speed = this.resource.speed;
 
     // this.graphic.setScale(2);
@@ -52,13 +55,15 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
     this.initAnimations();
 
+    // Physics ========================================
+
     // Interactivity ========================================
 
-    this.graphic.setInteractive();
-    this.scene.input.on("gameobjectdown", this.destroyShip);
+    this.spriteBody.setInteractive();
+    this.scene.input.on("gameobjectdown", this.onClickDestroyShip);
   }
 
-  public destroyShip(pointer: any, gameObject: any) {
+  public onClickDestroyShip(pointer: any, gameObject: any) {
     gameObject.setTexture(shipResources.images.explosion.key); //switch this sprite texture to the explosion one
     gameObject.play(shipResources.images.explosion.key); //play animation
     console.log("clicked me");
@@ -80,7 +85,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
       repeat: -1 //infinite loop
     });
 
-    this.graphic.play(this.resource.key, true);
+    this.spriteBody.play(this.resource.key, true);
 
     this.scene.anims.create({
       key: shipResources.images.explosion.key,
@@ -149,10 +154,10 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
   public isOutScreen() {
     //50 is a little bit of margin...
-    if (this.graphic.x >= game.canvas.width + 50) {
+    if (this.spriteBody.x >= game.canvas.width + 50) {
       return true;
     }
-    if (this.graphic.y >= game.canvas.height + 50) {
+    if (this.spriteBody.y >= game.canvas.height + 50) {
       return true;
     }
     return false;
@@ -160,14 +165,14 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
   public moveShip() {
     if (this.canMove) {
-      this.graphic.y += this.speed;
+      this.spriteBody.y += this.speed;
 
       // move back to the beginning when out of screen (random X axis)
       if (this.isOutScreen()) {
         const randomXAxis = Math.random() * game.canvas.width;
 
-        this.graphic.x = this.initX - randomXAxis;
-        this.graphic.y = this.initY - 50;
+        this.spriteBody.x = this.initX - randomXAxis;
+        this.spriteBody.y = this.initY - 50;
       }
     }
   }

@@ -25,14 +25,13 @@ export class PowerUp extends Phaser.GameObjects.Sprite {
       this.initY,
       shipResources.images.powerUp.key
     );
+
+    this.scene.powerUps.add(this.spriteBody);
+
     this.initAnimations();
 
     // physics ========================================
 
-    this.scene.physics.world.enableBody(this);
-    // this.scene.add.existing(this);
-    // this.body.setGravityY(0);
-    // this.body.setBounceY(0.2);
     this.spriteBody.setVelocity(100, 100);
     this.spriteBody.setCollideWorldBounds(true);
     this.spriteBody.setBounce(1);

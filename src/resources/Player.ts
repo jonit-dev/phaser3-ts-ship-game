@@ -16,6 +16,8 @@ export class Player extends Phaser.GameObjects.Sprite {
   minorShot: Phaser.Sound.BaseSound;
   beam: any;
 
+  hp: number;
+
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -30,6 +32,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.speed = 200;
     this.shootingDelay = 500;
     this.canShoot = true;
+    this.hp = 100;
 
     // Sound
 
@@ -41,11 +44,10 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.initY,
       playerResources.images.playerShip.key
     );
-    this.initAnimations();
 
     // physics ========================================
 
-    this.scene.physics.world.enableBody(this);
+    // this.scene.physics.world.enableBody(this);
     this.spriteBody.setCollideWorldBounds(true);
 
     // Keyboards events
@@ -57,6 +59,8 @@ export class Player extends Phaser.GameObjects.Sprite {
       right: "right",
       space: "space"
     });
+
+    this.initAnimations();
   }
 
   public initAnimations() {
@@ -107,7 +111,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.beam = new Beam(
       this.scene,
       this.spriteBody.x,
-      this.spriteBody.y,
+      this.spriteBody.y - 16,
       playerResources.images.shipBeam.key,
       0
     );
