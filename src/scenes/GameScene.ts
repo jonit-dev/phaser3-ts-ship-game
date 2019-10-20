@@ -129,7 +129,7 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.overlap(
       this.player.spriteBody,
       this.enemies,
-      this.onPlayerDestroy,
+      this.onPlayerDamage,
       undefined,
       this
     );
@@ -188,7 +188,7 @@ export class GameScene extends Phaser.Scene {
       shipResources.images.explosion.key,
       0
     );
-    enemy.destroy();
+    this.onEnemyResetInitialPosition(enemy);
   }
 
   public onPickPowerUp(
@@ -206,29 +206,30 @@ export class GameScene extends Phaser.Scene {
     beam.destroy();
   }
 
-  public onPlayerDestroy(player: any, enemy: any) {
+  public onEnemyResetInitialPosition(enemy: any) {
+    (enemy.x = Math.random() * game.canvas.width), (enemy.y = -50);
+  }
+
+  public onPlayerDamage(player: any, enemy: any) {
     console.log("destroying player");
     // player.destroy();
 
     // Player damaging ========================================
 
     // Enemy destroying ========================================
-    if (!enemy.isDestroyed) {
-      enemy.isDestroyed = true;
 
-      new Explosion(
-        this,
-        enemy.x,
-        enemy.y,
-        shipResources.images.explosion.key,
-        0
-      );
+    new Explosion(
+      this,
+      enemy.x,
+      enemy.y,
+      shipResources.images.explosion.key,
+      0
+    );
+    enemy.destroy();
+
+    setTimeout(() => {
+      //wait animation complete and then destroy the instance
       enemy.destroy();
-
-      setTimeout(() => {
-        //wait animation complete and then destroy the instance
-        enemy.destroy();
-      }, 500);
-    }
+    }, 500);
   }
 }

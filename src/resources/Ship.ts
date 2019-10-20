@@ -13,7 +13,6 @@ export class Ship extends Phaser.GameObjects.Sprite {
   canMove: boolean | undefined;
   speed: number;
   resource: any;
-  isDestroyed: boolean;
 
   constructor(
     scene: Phaser.Scene,
@@ -30,7 +29,6 @@ export class Ship extends Phaser.GameObjects.Sprite {
     this.type = type;
     this.canMove = startMoving;
     this.speed = 0;
-    this.isDestroyed = false;
 
     if (!this.canMove) {
       setTimeout(() => {
