@@ -9,7 +9,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
   initX: number;
   initY: number;
   spriteBody: Phaser.Physics.Arcade.Sprite;
-  type: any;
+  shipType: any;
   canMove: boolean | undefined;
   speed: number;
   resource: any;
@@ -26,7 +26,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
     super(scene, x, y, texture, frame);
     this.initX = x;
     this.initY = y;
-    this.type = type;
+    this.shipType = type;
     this.canMove = startMoving;
     this.speed = 0;
 
@@ -38,7 +38,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
     // Graphic resources ========================================
 
-    this.resource = shipResources.images[this.type];
+    this.resource = shipResources.images[this.shipType];
 
     this.spriteBody = this.scene.physics.add.sprite(
       this.initX,

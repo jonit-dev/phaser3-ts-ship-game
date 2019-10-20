@@ -3,6 +3,7 @@ import { Background } from "../resources/Background";
 import { Explosion } from "../resources/effects/Explosion";
 import { PowerUp } from "../resources/items/PowerUp";
 import { Ship } from "../resources/Ship";
+import { UIManager } from "../resources/UIManager";
 import { Beam } from "./../resources/Beam";
 import { Player } from "./../resources/Player";
 
@@ -16,6 +17,9 @@ export class LoadingScene extends Phaser.Scene {
   }
   init() {}
   preload() {
+    //Fonts
+    UIManager.preload(this);
+
     // Preload game assets
     Background.preload(this);
     Player.preload(this);

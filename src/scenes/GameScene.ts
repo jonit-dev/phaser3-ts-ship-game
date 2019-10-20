@@ -6,6 +6,7 @@ import { Explosion } from "../resources/effects/Explosion";
 import { Player } from "../resources/Player";
 import { Ship } from "../resources/Ship";
 import { TweenTest } from "../resources/TweenTest";
+import { UIManager } from "../resources/UIManager";
 import { ShipType } from "../types/Ship.types";
 import AlignGrid from "../utils/AlignGrid";
 import { playerResources } from "./../constants/Player.resources";
@@ -26,6 +27,9 @@ export class GameScene extends Phaser.Scene {
   beams: Phaser.Physics.Arcade.Group;
   enemies: Phaser.Physics.Arcade.Group;
   explosion: Explosion;
+  score: number;
+  uiManager: UIManager;
+  scoreLabel: Phaser.GameObjects.BitmapText;
 
   constructor() {
     super({
@@ -37,12 +41,11 @@ export class GameScene extends Phaser.Scene {
     this.beams = this.physics.add.group();
     this.enemies = this.physics.add.group();
   }
+
   public create() {
-    //groups
+    this.background = new Background(this);
 
     // Sprites ========================================
-
-    this.background = new Background(this);
 
     this.player = new Player(
       this,
@@ -92,13 +95,6 @@ export class GameScene extends Phaser.Scene {
         0
       );
     }
-
-    // UI ========================================
-
-    this.add.text(5, 5, "Score", {
-      font: "12px Arial",
-      fill: "yellow"
-    });
 
     // Sounds ========================================
     if (!env.debug) {
@@ -164,6 +160,19 @@ export class GameScene extends Phaser.Scene {
     //   this.grid
     // );
     //align to grid this tweenTest obj
+
+    this.onPostCreation();
+  }
+
+  public onPostCreation() {
+    //this function happens after the creation of our initial content.
+    //We set the UI here since it needs to be on top of the screen, after all other elements were created.
+
+    // UI ========================================
+    this.score = 0; //set initial player score
+
+    this.uiManager = new UIManager(this);
+    this.scoreLabel = this.uiManager.drawScore();
   }
 
   public update() {
@@ -180,6 +189,22 @@ export class GameScene extends Phaser.Scene {
   *##############################################################*/
 
   public onHitEnemy(beam: any, enemy: any) {
+    //increase score by 10
+
+    switch (enemy.texture.key) {
+      case ShipType.SmallShip:
+        this.score += 10;
+        break;
+      case ShipType.AttackerShip:
+        this.score += 20;
+        break;
+      case ShipType.MotherShip:
+        this.score += 35;
+        break;
+    }
+
+    this.scoreLabel.text = `SCORE ${UIManager.zeroPad(this.score, 6)}`;
+
     beam.destroy();
     new Explosion(
       this,
