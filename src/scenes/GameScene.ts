@@ -134,6 +134,14 @@ export class GameScene extends Phaser.Scene {
       this
     );
 
+    this.physics.add.overlap(
+      this.beams,
+      this.enemies,
+      this.onHitEnemy,
+      undefined,
+      this
+    );
+
     // Tests
 
     // Setup grid
@@ -171,7 +179,17 @@ export class GameScene extends Phaser.Scene {
   |  >>> PHYSICS functions
   *##############################################################*/
 
-  // Collisions ========================================
+  public onHitEnemy(beam: any, enemy: any) {
+    beam.destroy();
+    new Explosion(
+      this,
+      enemy.x,
+      enemy.y,
+      shipResources.images.explosion.key,
+      0
+    );
+    enemy.destroy();
+  }
 
   public onPickPowerUp(
     player: Phaser.GameObjects.GameObject,
@@ -198,7 +216,7 @@ export class GameScene extends Phaser.Scene {
     if (!enemy.isDestroyed) {
       enemy.isDestroyed = true;
 
-      const explosion = new Explosion(
+      new Explosion(
         this,
         enemy.x,
         enemy.y,
