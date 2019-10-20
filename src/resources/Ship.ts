@@ -2,6 +2,7 @@ import { shipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
 import { GameScene } from "../scenes/GameScene";
 import { ShipType } from "../types/Ship.types";
+import { Explosion } from "./effects/Explosion";
 
 export class Ship extends Phaser.GameObjects.Sprite {
   scene: GameScene;
@@ -53,6 +54,7 @@ export class Ship extends Phaser.GameObjects.Sprite {
     // this.graphic.setScale(2);
     // this.image.flipY = true;
 
+    this.spriteBody.setOrigin(0.5, 0.5);
     this.initAnimations();
 
     // Physics ========================================
@@ -64,14 +66,14 @@ export class Ship extends Phaser.GameObjects.Sprite {
   }
 
   public onClickDestroyShip(pointer: any, gameObject: any) {
-    gameObject.setTexture(shipResources.images.explosion.key); //switch this sprite texture to the explosion one
-    gameObject.play(shipResources.images.explosion.key); //play animation
-    console.log("clicked me");
-
-    const explosionSound = this.scene.sound.add(
-      shipResources.sounds.shipExplosion.key
+    const explosion = new Explosion(
+      this.scene,
+      this.x,
+      this.y,
+      shipResources.images.explosion.key,
+      0
     );
-    explosionSound.play();
+    gameObject.destroy();
   }
 
   public initAnimations() {
@@ -86,28 +88,10 @@ export class Ship extends Phaser.GameObjects.Sprite {
     });
 
     this.spriteBody.play(this.resource.key, true);
-
-    this.scene.anims.create({
-      key: shipResources.images.explosion.key,
-      frames: this.scene.anims.generateFrameNumbers(
-        shipResources.images.explosion.key,
-        {
-          start: 0,
-          end: 4
-        }
-      ),
-      frameRate: 20, //fps
-      repeat: 0, //infinite loop
-      hideOnComplete: true
-    });
   }
 
   public static preload(loadingScene: any) {
     // Audio
-
-    loadingScene.load.audio(shipResources.sounds.shipExplosion.key, [
-      shipResources.sounds.shipExplosion.path
-    ]);
 
     // Images ========================================
 

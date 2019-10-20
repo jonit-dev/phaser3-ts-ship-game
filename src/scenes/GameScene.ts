@@ -2,6 +2,7 @@ import { env } from "../constants/Env";
 import Scenes from "../constants/Scenes";
 import { shipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
+import { Explosion } from "../resources/effects/Explosion";
 import { Player } from "../resources/Player";
 import { Ship } from "../resources/Ship";
 import { TweenTest } from "../resources/TweenTest";
@@ -24,6 +25,7 @@ export class GameScene extends Phaser.Scene {
   powerUps: Phaser.Physics.Arcade.Group;
   beams: Phaser.Physics.Arcade.Group;
   enemies: Phaser.Physics.Arcade.Group;
+  explosion: Explosion;
 
   constructor() {
     super({
@@ -178,6 +180,7 @@ export class GameScene extends Phaser.Scene {
     console.log("Player picking up powerUp");
     //@ts-ignore
     powerUp.disableBody(true, true); //this will inactivate and hide the power up
+    powerUp.destroy();
   }
 
   public onBeamsPowerUpCollision(beam: any, powerUp: any) {
@@ -194,12 +197,16 @@ export class GameScene extends Phaser.Scene {
     // Enemy destroying ========================================
     if (!enemy.isDestroyed) {
       enemy.isDestroyed = true;
-      enemy.setTexture(shipResources.images.explosion.key); //switch this sprite texture to the explosion one
-      enemy.play(shipResources.images.explosion.key);
-      const explosionSound = this.sound.add(
-        shipResources.sounds.shipExplosion.key
+
+      const explosion = new Explosion(
+        this,
+        enemy.x,
+        enemy.y,
+        shipResources.images.explosion.key,
+        0
       );
-      explosionSound.play();
+      enemy.destroy();
+
       setTimeout(() => {
         //wait animation complete and then destroy the instance
         enemy.destroy();

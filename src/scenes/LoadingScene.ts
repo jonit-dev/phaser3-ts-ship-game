@@ -1,5 +1,6 @@
 import Scenes from "../constants/Scenes";
 import { Background } from "../resources/Background";
+import { Explosion } from "../resources/effects/Explosion";
 import { PowerUp } from "../resources/items/PowerUp";
 import { Ship } from "../resources/Ship";
 import { Beam } from "./../resources/Beam";
@@ -26,6 +27,9 @@ export class LoadingScene extends Phaser.Scene {
 
     //Items
     PowerUp.preload(this);
+
+    //Effects
+    Explosion.preload(this);
   }
 
   //required!
