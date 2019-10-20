@@ -2,6 +2,7 @@ import Scenes from "../constants/Scenes";
 import { Background } from "../resources/Background";
 import { PowerUp } from "../resources/items/PowerUp";
 import { Ship } from "../resources/Ship";
+import { Beam } from "./../resources/Beam";
 import { Player } from "./../resources/Player";
 
 export class LoadingScene extends Phaser.Scene {
@@ -17,6 +18,7 @@ export class LoadingScene extends Phaser.Scene {
     // Preload game assets
     Background.preload(this);
     Player.preload(this);
+    Beam.preload(this);
 
     //Enemies
     Ship.preload(this); //preload ship assets on this loading scene

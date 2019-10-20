@@ -1,5 +1,6 @@
 import { GameScene } from "../scenes/GameScene";
 import { playerResources } from "./../constants/Player.resources";
+import { Beam } from "./Beam";
 
 export class Player extends Phaser.GameObjects.Sprite {
   scene: GameScene;
@@ -8,9 +9,11 @@ export class Player extends Phaser.GameObjects.Sprite {
   spriteBody: Phaser.Physics.Arcade.Sprite;
 
   speed: number;
-  body: Phaser.Physics.Arcade.Body;
   isMoving: boolean;
   keys: any;
+  shootingDelay: number;
+  canShoot: boolean;
+  minorShot: Phaser.Sound.BaseSound;
 
   constructor(
     scene: Phaser.Scene,
@@ -24,6 +27,12 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.initX = x;
     this.initY = y;
     this.speed = 200;
+    this.shootingDelay = 500;
+    this.canShoot = true;
+
+    // Sound
+
+    this.minorShot = this.scene.sound.add(playerResources.sounds.minorShot.key);
 
     // Graphic resources ====================================
     this.spriteBody = this.scene.physics.add.sprite(
@@ -44,7 +53,8 @@ export class Player extends Phaser.GameObjects.Sprite {
       up: "up",
       down: "down",
       left: "left",
-      right: "right"
+      right: "right",
+      space: "space"
     });
   }
 
@@ -67,8 +77,13 @@ export class Player extends Phaser.GameObjects.Sprite {
   public static preload(loadingScene: any) {
     // Audio ========================================
 
+    loadingScene.load.audio(playerResources.sounds.minorShot.key, [
+      playerResources.sounds.minorShot.path
+    ]);
+
     // Images ========================================
 
+    // Ship
     loadingScene.load.spritesheet(
       playerResources.images.playerShip.key,
       playerResources.images.playerShip.path,
@@ -80,10 +95,37 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   public update() {
-    this.playerMovementManager();
+    this.playerMovementHandler();
+    this.shootingHandler();
   }
 
-  public playerMovementManager() {
+  public shotBeam() {
+    let beam = new Beam(
+      this.scene,
+      this.spriteBody.x,
+      this.spriteBody.y,
+      playerResources.images.shipBeam.key,
+      0
+    );
+  }
+
+  public shootingHandler() {
+    if (this.keys.space.isDown && this.canShoot) {
+      this.canShoot = false;
+      console.log("shooting!");
+
+      this.shotBeam();
+
+      this.minorShot.play();
+
+      setTimeout(() => {
+        console.log("can shoot again");
+        this.canShoot = true;
+      }, this.shootingDelay);
+    }
+  }
+
+  public playerMovementHandler() {
     //moving
     if (this.keys.left.isDown) {
       this.spriteBody.setVelocityX(-this.speed);
