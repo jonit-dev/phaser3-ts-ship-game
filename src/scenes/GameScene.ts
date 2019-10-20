@@ -4,7 +4,9 @@ import { shipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
 import { Player } from "../resources/Player";
 import { Ship } from "../resources/Ship";
+import { TweenTest } from "../resources/TweenTest";
 import { ShipType } from "../types/Ship.types";
+import AlignGrid from "../utils/AlignGrid";
 import { playerResources } from "./../constants/Player.resources";
 import { Background } from "./../resources/Background";
 import { PowerUp } from "./../resources/items/PowerUp";
@@ -17,6 +19,8 @@ export class GameScene extends Phaser.Scene {
   motherShip: Ship;
   powerUps: PowerUp[];
   player: Player;
+  tweenTest: TweenTest;
+  grid: AlignGrid;
 
   constructor() {
     super({
@@ -97,6 +101,29 @@ export class GameScene extends Phaser.Scene {
       );
       ambienceMusic.play();
     }
+
+    // Tests
+
+    // Setup grid
+
+    this.grid = new AlignGrid({
+      scene: this,
+      cols: game.canvas.width / 32,
+      rows: game.canvas.height / 32
+    });
+    this.grid.showNumbers();
+
+    // tween movement
+
+    this.tweenTest = new TweenTest(
+      this,
+      0,
+      200,
+      shipResources.images.smallShip.key,
+      0,
+      this.grid
+    );
+    //align to grid this tweenTest obj
   }
 
   update() {
@@ -105,5 +132,6 @@ export class GameScene extends Phaser.Scene {
     this.motherShip.update();
     this.background.update();
     this.player.update();
+    this.tweenTest.update();
   }
 }

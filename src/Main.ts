@@ -14,13 +14,13 @@ export const game = new Phaser.Game({
   scale: {
     parent: "game",
     mode: Phaser.Scale.FIT,
-    width: 256,
-    height: 272
+    width: 288,
+    height: 288
   },
   physics: {
     default: "arcade",
     arcade: {
-      debug: false
+      debug: true
     }
   }
 });

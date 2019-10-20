@@ -1,27 +1,25 @@
+import { GameObjects } from "phaser";
+
 import { game } from "../Main";
 
 interface IGridConfig {
   scene: any;
-  cols: number;
-  rows: number;
   width?: number | string;
   height?: number | string;
-}
-
-interface IGridObj {
-  x: number;
-  y: number;
+  cols?: number;
+  rows?: number;
 }
 
 export default class AlignGrid {
   h: any;
   w: any;
-  rows: number;
-  cols: number;
+  rows?: number;
+  cols?: number;
   scene: any;
   cw: any;
   ch: any;
   graphics: any;
+  config: any;
 
   constructor(config: IGridConfig) {
     if (!config.scene) {
@@ -40,6 +38,7 @@ export default class AlignGrid {
     if (!config.height) {
       config.height = game.config.height;
     }
+    this.config = config;
     this.h = config.height;
     this.w = config.width;
     this.rows = config.rows;
@@ -52,7 +51,7 @@ export default class AlignGrid {
   }
 
   //place an object in relation to the grid
-  public placeAt(xx: number, yy: number, obj: IGridObj) {
+  public placeAt(xx: number, yy: number, obj: GameObjects.Sprite) {
     //calculate the center of the cell
     //by adding half of the height and width
     //to the x and y of the coordinates
@@ -60,6 +59,12 @@ export default class AlignGrid {
     var y2 = this.ch * yy + this.ch / 2;
     obj.x = x2;
     obj.y = y2;
+  }
+  placeAtIndex(index: number, obj: GameObjects.Sprite) {
+    var yy = Math.floor(index / this.config.cols);
+    var xx = index - yy * this.config.cols;
+
+    this.placeAt(xx, yy, obj);
   }
 
   public show(a = 1) {
