@@ -14,6 +14,7 @@ export class Player extends Phaser.GameObjects.Sprite {
   shootingDelay: number;
   canShoot: boolean;
   minorShot: Phaser.Sound.BaseSound;
+  beam: any;
 
   constructor(
     scene: Phaser.Scene,
@@ -44,7 +45,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     // physics ========================================
 
-    this.scene.physics.world.enable(this);
+    this.scene.physics.world.enableBody(this);
     this.spriteBody.setCollideWorldBounds(true);
 
     // Keyboards events
@@ -95,12 +96,15 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   public update() {
+    if (this.beam) {
+      this.beam.update();
+    }
     this.playerMovementHandler();
     this.shootingHandler();
   }
 
   public shotBeam() {
-    let beam = new Beam(
+    this.beam = new Beam(
       this.scene,
       this.spriteBody.x,
       this.spriteBody.y,

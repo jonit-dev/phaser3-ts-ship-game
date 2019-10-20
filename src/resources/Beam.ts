@@ -1,11 +1,13 @@
 import { GameScene } from "../scenes/GameScene";
 import { playerResources } from "./../constants/Player.resources";
+import { game } from "./../Main";
 
 export class Beam extends Phaser.GameObjects.Sprite {
   scene: GameScene;
   initX: number;
   initY: number;
   spriteBody: Phaser.Physics.Arcade.Sprite;
+  game: number;
 
   constructor(
     scene: Phaser.Scene,
@@ -29,7 +31,7 @@ export class Beam extends Phaser.GameObjects.Sprite {
 
     // physics ========================================
 
-    this.scene.physics.world.enable(this);
+    this.scene.physics.world.enableBody(this);
     // this.scene.add.existing(this);
     // this.body.setGravityY(0);
     // this.body.setBounceY(0.2);
@@ -69,5 +71,9 @@ export class Beam extends Phaser.GameObjects.Sprite {
     );
   }
 
-  public update() {}
+  public update() {
+    if (this.spriteBody.y <= game.canvas.height * 0.3) {
+      this.spriteBody.destroy();
+    }
+  }
 }

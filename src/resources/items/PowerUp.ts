@@ -29,7 +29,7 @@ export class PowerUp extends Phaser.GameObjects.Sprite {
 
     // physics ========================================
 
-    this.scene.physics.world.enable(this);
+    this.scene.physics.world.enableBody(this);
     // this.scene.add.existing(this);
     // this.body.setGravityY(0);
     // this.body.setBounceY(0.2);
