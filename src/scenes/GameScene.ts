@@ -28,10 +28,13 @@ export class GameScene extends Phaser.Scene {
   beams: Phaser.Physics.Arcade.Group;
   enemies: Phaser.Physics.Arcade.Group;
   explosion: Explosion;
-  score: number;
+
   uiManager: UIManager;
-  scoreLabel: Phaser.GameObjects.BitmapText;
   eventManager: any;
+
+  static RESPAWN_DELAY: number = 2000;
+  static score: number = 0;
+  static scoreLabel: Phaser.GameObjects.BitmapText;
 
   constructor() {
     super({
@@ -142,10 +145,9 @@ export class GameScene extends Phaser.Scene {
     //We set the UI here since it needs to be on top of the screen, after all other elements were created.
 
     // UI ========================================
-    this.score = 0; //set initial player score
 
     this.uiManager = new UIManager(this);
-    this.scoreLabel = this.uiManager.drawScore();
+    GameScene.scoreLabel = this.uiManager.drawScore();
   }
 
   public update() {

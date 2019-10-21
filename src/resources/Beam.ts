@@ -98,18 +98,18 @@ export class Beam extends Phaser.GameObjects.Sprite {
 
     switch (enemy.texture.key) {
       case ShipType.SmallShip:
-        beam.scene.score += 10;
+        GameScene.score += 10;
         break;
       case ShipType.AttackerShip:
-        beam.scene.score += 20;
+        GameScene.score += 20;
         break;
       case ShipType.MotherShip:
-        beam.scene.score += 35;
+        GameScene.score += 35;
         break;
     }
 
-    beam.scene.scoreLabel.text = `SCORE ${UIManager.zeroPad(
-      beam.scene.score,
+    GameScene.scoreLabel.text = `SCORE ${UIManager.zeroPad(
+      GameScene.score,
       6
     )}`;
 

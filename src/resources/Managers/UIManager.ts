@@ -1,5 +1,6 @@
 import { globalResources } from "../../constants/Global.resources";
 import { game } from "../../Main";
+import { GameScene } from "../../scenes/GameScene";
 
 export class UIManager {
   scene: Phaser.Scene;
@@ -35,7 +36,7 @@ export class UIManager {
       5,
       globalResources.scoreFont.key,
       //@ts-ignore
-      `SCORE ${this.scene.score}`,
+      `SCORE ${GameScene.score}`,
       16
     );
   }

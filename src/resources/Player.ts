@@ -194,7 +194,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     player.disableBody(true, true);
     setTimeout(() => {
       this.scene.player.onResetPlayer();
-    }, 2000);
+    }, GameScene.RESPAWN_DELAY);
 
     // Enemy destroying ========================================
 
