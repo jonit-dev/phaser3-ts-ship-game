@@ -9,6 +9,7 @@ import { Ship } from "./Ship";
 
 export class Beam extends Phaser.GameObjects.Sprite {
   scene: GameScene;
+
   initX: number;
   initY: number;
   spriteBody: Phaser.Physics.Arcade.Sprite;
@@ -83,6 +84,10 @@ export class Beam extends Phaser.GameObjects.Sprite {
     }
   }
 
+  /*#############################################################|
+  |  >>> EVENTS
+  *##############################################################*/
+
   public static onBeamsPowerUpCollision(beam: any, powerUp: any) {
     console.log("Beam destroyed");
     beam.destroy();
@@ -110,7 +115,7 @@ export class Beam extends Phaser.GameObjects.Sprite {
 
     beam.destroy();
     new Explosion(
-      this.scene,
+      enemy.scene,
       enemy.x,
       enemy.y,
       shipResources.images.explosion.key,

@@ -161,6 +161,10 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
+  /*#############################################################|
+  |  >>> EVENTS
+  *##############################################################*/
+
   public onResetPlayer() {
     this.scene.player.spriteBody.enableBody(
       true,

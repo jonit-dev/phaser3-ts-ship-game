@@ -63,21 +63,6 @@ export class Ship extends Phaser.GameObjects.Sprite {
     this.scene.input.on("gameobjectdown", this.onClickDestroyShip);
   }
 
-  public static onShipResetInitialPosition(enemy: any) {
-    (enemy.x = Math.random() * game.canvas.width), (enemy.y = -50);
-  }
-
-  public onClickDestroyShip(pointer: any, gameObject: any) {
-    const explosion = new Explosion(
-      this.scene,
-      this.x,
-      this.y,
-      shipResources.images.explosion.key,
-      0
-    );
-    gameObject.destroy();
-  }
-
   public initAnimations() {
     this.scene.anims.create({
       key: this.resource.key,
@@ -161,5 +146,23 @@ export class Ship extends Phaser.GameObjects.Sprite {
         this.spriteBody.y = this.initY - 50;
       }
     }
+  }
+  /*#############################################################|
+  |  >>> EVENTS
+  *##############################################################*/
+
+  public static onShipResetInitialPosition(enemy: any) {
+    (enemy.x = Math.random() * game.canvas.width), (enemy.y = -50);
+  }
+
+  public onClickDestroyShip(pointer: any, gameObject: any) {
+    const explosion = new Explosion(
+      this.scene,
+      this.x,
+      this.y,
+      shipResources.images.explosion.key,
+      0
+    );
+    gameObject.destroy();
   }
 }
