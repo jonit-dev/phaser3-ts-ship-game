@@ -1,3 +1,3 @@
 export const env = {
-  debug: true
+  debug: false
 };
