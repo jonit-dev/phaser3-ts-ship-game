@@ -63,6 +63,10 @@ export class Ship extends Phaser.GameObjects.Sprite {
     this.scene.input.on("gameobjectdown", this.onClickDestroyShip);
   }
 
+  public static onShipResetInitialPosition(enemy: any) {
+    (enemy.x = Math.random() * game.canvas.width), (enemy.y = -50);
+  }
+
   public onClickDestroyShip(pointer: any, gameObject: any) {
     const explosion = new Explosion(
       this.scene,

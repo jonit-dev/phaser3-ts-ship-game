@@ -1,6 +1,11 @@
+import { shipResources } from "../constants/Ship.resources";
 import { GameScene } from "../scenes/GameScene";
+import { ShipType } from "../types/Ship.types";
 import { playerResources } from "./../constants/Player.resources";
 import { game } from "./../Main";
+import { Explosion } from "./effects/Explosion";
+import { UIManager } from "./Managers/UIManager";
+import { Ship } from "./Ship";
 
 export class Beam extends Phaser.GameObjects.Sprite {
   scene: GameScene;
@@ -76,5 +81,41 @@ export class Beam extends Phaser.GameObjects.Sprite {
     if (this.spriteBody.y <= game.canvas.height * 0.3) {
       this.spriteBody.destroy();
     }
+  }
+
+  public static onBeamsPowerUpCollision(beam: any, powerUp: any) {
+    console.log("Beam destroyed");
+    beam.destroy();
+  }
+
+  public static onBeamHitShip(beam: any, enemy: any) {
+    //increase score by 10
+
+    switch (enemy.texture.key) {
+      case ShipType.SmallShip:
+        beam.scene.score += 10;
+        break;
+      case ShipType.AttackerShip:
+        beam.scene.score += 20;
+        break;
+      case ShipType.MotherShip:
+        beam.scene.score += 35;
+        break;
+    }
+
+    beam.scene.scoreLabel.text = `SCORE ${UIManager.zeroPad(
+      beam.scene.score,
+      6
+    )}`;
+
+    beam.destroy();
+    new Explosion(
+      this.scene,
+      enemy.x,
+      enemy.y,
+      shipResources.images.explosion.key,
+      0
+    );
+    Ship.onShipResetInitialPosition(enemy);
   }
 }

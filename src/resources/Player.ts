@@ -1,6 +1,9 @@
+import { shipResources } from "../constants/Ship.resources";
+import { game } from "../Main";
 import { GameScene } from "../scenes/GameScene";
 import { playerResources } from "./../constants/Player.resources";
 import { Beam } from "./Beam";
+import { Explosion } from "./effects/Explosion";
 
 export class Player extends Phaser.GameObjects.Sprite {
   scene: GameScene;
@@ -118,7 +121,8 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   public shootingHandler() {
-    if (this.keys.space.isDown && this.canShoot) {
+    //its checking if the player still alive (this.active), canShoot (shoot delay) and for a space keypress down
+    if (this.keys.space.isDown && this.canShoot && this.spriteBody.active) {
       this.canShoot = false;
       console.log("shooting!");
 
@@ -155,5 +159,58 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.spriteBody.setVelocityX(0);
       this.spriteBody.setVelocityY(0);
     }
+  }
+
+  public onResetPlayer() {
+    this.scene.player.spriteBody.enableBody(
+      true,
+      game.canvas.width / 2 - 8,
+      game.canvas.height + 64,
+      true,
+      true
+    );
+  }
+  public onPlayerDamage(player: any, enemy: any) {
+    console.log("destroying player");
+    // player.destroy();
+
+    // Player damaging ========================================
+
+    //show explosion
+    new Explosion(
+      this.scene,
+      player.x,
+      player.y,
+      shipResources.images.explosion.key,
+      0
+    );
+
+    //TODO: decrease HP
+
+    player.disableBody(true, true);
+    setTimeout(() => {
+      this.scene.player.onResetPlayer();
+    }, 2000);
+
+    // Enemy destroying ========================================
+
+    new Explosion(
+      this.scene,
+      enemy.x,
+      enemy.y,
+      shipResources.images.explosion.key,
+      0
+    );
+    enemy.destroy();
+  }
+
+  public onPickPowerUp(
+    player: Phaser.GameObjects.GameObject,
+    powerUp: Phaser.GameObjects.GameObject
+  ) {
+    console.log("Player picking up powerUp");
+    //@ts-ignore
+    powerUp.disableBody(true, true); //this will inactivate and hide the power up
+    powerUp.destroy();
   }
 }
