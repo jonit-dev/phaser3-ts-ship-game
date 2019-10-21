@@ -3,10 +3,11 @@ import Scenes from "../constants/Scenes";
 import { shipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
 import { Explosion } from "../resources/effects/Explosion";
+import { EventManager } from "../resources/Managers/EventManager";
+import { UIManager } from "../resources/Managers/UIManager";
 import { Player } from "../resources/Player";
 import { Ship } from "../resources/Ship";
 import { TweenTest } from "../resources/TweenTest";
-import { UIManager } from "../resources/UIManager";
 import { ShipType } from "../types/Ship.types";
 import AlignGrid from "../utils/AlignGrid";
 import { playerResources } from "./../constants/Player.resources";
@@ -30,6 +31,7 @@ export class GameScene extends Phaser.Scene {
   score: number;
   uiManager: UIManager;
   scoreLabel: Phaser.GameObjects.BitmapText;
+  eventManager: any;
 
   constructor() {
     super({
@@ -106,37 +108,8 @@ export class GameScene extends Phaser.Scene {
 
     // Physics ========================================
 
-    this.physics.add.collider(
-      this.beams,
-      this.powerUps,
-      this.onBeamsPowerUpCollision
-    );
-
-    //overlap is almost the same as collider, but it DOES NOT trigger physics.
-    // we will use it to make the player pick up objects on the map
-    this.physics.add.overlap(
-      this.player.spriteBody,
-      this.powerUps,
-      this.onPickPowerUp,
-      undefined,
-      this
-    );
-
-    this.physics.add.overlap(
-      this.player.spriteBody,
-      this.enemies,
-      this.onPlayerDamage,
-      undefined,
-      this
-    );
-
-    this.physics.add.overlap(
-      this.beams,
-      this.enemies,
-      this.onHitEnemy,
-      undefined,
-      this
-    );
+    this.eventManager = new EventManager(this);
+    this.eventManager.loadEvents();
 
     // Tests
 
@@ -182,79 +155,5 @@ export class GameScene extends Phaser.Scene {
     this.background.update();
     this.player.update();
     // this.tweenTest.update();
-  }
-
-  /*#############################################################|
-  |  >>> PHYSICS functions
-  *##############################################################*/
-
-  public onHitEnemy(beam: any, enemy: any) {
-    //increase score by 10
-
-    switch (enemy.texture.key) {
-      case ShipType.SmallShip:
-        this.score += 10;
-        break;
-      case ShipType.AttackerShip:
-        this.score += 20;
-        break;
-      case ShipType.MotherShip:
-        this.score += 35;
-        break;
-    }
-
-    this.scoreLabel.text = `SCORE ${UIManager.zeroPad(this.score, 6)}`;
-
-    beam.destroy();
-    new Explosion(
-      this,
-      enemy.x,
-      enemy.y,
-      shipResources.images.explosion.key,
-      0
-    );
-    this.onEnemyResetInitialPosition(enemy);
-  }
-
-  public onPickPowerUp(
-    player: Phaser.GameObjects.GameObject,
-    powerUp: Phaser.GameObjects.GameObject
-  ) {
-    console.log("Player picking up powerUp");
-    //@ts-ignore
-    powerUp.disableBody(true, true); //this will inactivate and hide the power up
-    powerUp.destroy();
-  }
-
-  public onBeamsPowerUpCollision(beam: any, powerUp: any) {
-    console.log("Beam destroyed");
-    beam.destroy();
-  }
-
-  public onEnemyResetInitialPosition(enemy: any) {
-    (enemy.x = Math.random() * game.canvas.width), (enemy.y = -50);
-  }
-
-  public onPlayerDamage(player: any, enemy: any) {
-    console.log("destroying player");
-    // player.destroy();
-
-    // Player damaging ========================================
-
-    // Enemy destroying ========================================
-
-    new Explosion(
-      this,
-      enemy.x,
-      enemy.y,
-      shipResources.images.explosion.key,
-      0
-    );
-    enemy.destroy();
-
-    setTimeout(() => {
-      //wait animation complete and then destroy the instance
-      enemy.destroy();
-    }, 500);
   }
 }

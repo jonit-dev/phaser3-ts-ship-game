@@ -18,8 +18,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Scenes_1 = __importDefault(require("../constants/Scenes"));
 var Background_1 = require("../resources/Background");
+var Explosion_1 = require("../resources/effects/Explosion");
 var PowerUp_1 = require("../resources/items/PowerUp");
 var Ship_1 = require("../resources/Ship");
+var UIManager_1 = require("../resources/Managers/UIManager");
 var Beam_1 = require("./../resources/Beam");
 var Player_1 = require("./../resources/Player");
 var LoadingScene = /** @class */ (function (_super) {
@@ -31,6 +33,8 @@ var LoadingScene = /** @class */ (function (_super) {
     }
     LoadingScene.prototype.init = function () { };
     LoadingScene.prototype.preload = function () {
+        //Fonts
+        UIManager_1.UIManager.preload(this);
         // Preload game assets
         Background_1.Background.preload(this);
         Player_1.Player.preload(this);
@@ -40,6 +44,8 @@ var LoadingScene = /** @class */ (function (_super) {
         Ship_1.Ship.preload(this); //preload ship assets on this loading scene
         //Items
         PowerUp_1.PowerUp.preload(this);
+        //Effects
+        Explosion_1.Explosion.preload(this);
     };
     //required!
     LoadingScene.prototype.create = function () {

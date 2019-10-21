@@ -20,6 +20,8 @@ var Env_1 = require("../constants/Env");
 var Scenes_1 = __importDefault(require("../constants/Scenes"));
 var Ship_resources_1 = require("../constants/Ship.resources");
 var Main_1 = require("../Main");
+var EventManager_1 = require("../resources/Managers/EventManager");
+var UIManager_1 = require("../resources/Managers/UIManager");
 var Player_1 = require("../resources/Player");
 var Ship_1 = require("../resources/Ship");
 var Ship_types_1 = require("../types/Ship.types");
@@ -39,9 +41,8 @@ var GameScene = /** @class */ (function (_super) {
         this.enemies = this.physics.add.group();
     };
     GameScene.prototype.create = function () {
-        //groups
-        // Sprites ========================================
         this.background = new Background_1.Background(this);
+        // Sprites ========================================
         this.player = new Player_1.Player(this, Main_1.game.canvas.width / 2, Main_1.game.canvas.height * 0.8, Player_resources_1.playerResources.images.playerShip.key, 0);
         this.smallShip = new Ship_1.Ship(this, Main_1.game.canvas.width / 2, -50, Ship_resources_1.shipResources.images.smallShip.key, 0, Ship_types_1.ShipType.SmallShip);
         this.attackerShip = new Ship_1.Ship(this, Main_1.game.canvas.width / 2 + 50, -50, Ship_resources_1.shipResources.images.attackerShip.key, 0, Ship_types_1.ShipType.AttackerShip);
@@ -51,22 +52,20 @@ var GameScene = /** @class */ (function (_super) {
         for (var i = 0; i < N_POWER_UPS; i++) {
             new PowerUp_1.PowerUp(this, Math.random() * Main_1.game.canvas.width, Math.random() * Main_1.game.canvas.height, Ship_resources_1.shipResources.images.powerUp.key, 0);
         }
-        // UI ========================================
-        this.add.text(5, 5, "Score", {
-            font: "12px Arial",
-            fill: "yellow"
-        });
         // Sounds ========================================
         if (!Env_1.env.debug) {
             var ambienceMusic = this.sound.add(Ship_resources_1.shipResources.sounds.interGalatic.key);
             ambienceMusic.play();
         }
-        // Physics ========================================
-        this.physics.add.collider(this.beams, this.powerUps, this.onBeamsPowerUpCollision);
-        //overlap is almost the same as collider, but it DOES NOT trigger physics.
-        // we will use it to make the player pick up objects on the map
-        this.physics.add.overlap(this.player.spriteBody, this.powerUps, this.onPickPowerUp, undefined, this);
-        this.physics.add.overlap(this.player.spriteBody, this.enemies, this.onPlayerDestroy, undefined, this);
+        this.eventManager = new EventManager_1.EventManager(this);
+        this.eventManager.loadEvents();
+        // this.physics.add.overlap(
+        //   this.beams,
+        //   this.enemies,
+        //   this.onHitEnemy,
+        //   undefined,
+        //   this
+        // );
         // Tests
         // Setup grid
         // this.grid = new AlignGrid({
@@ -85,6 +84,15 @@ var GameScene = /** @class */ (function (_super) {
         //   this.grid
         // );
         //align to grid this tweenTest obj
+        this.onPostCreation();
+    };
+    GameScene.prototype.onPostCreation = function () {
+        //this function happens after the creation of our initial content.
+        //We set the UI here since it needs to be on top of the screen, after all other elements were created.
+        // UI ========================================
+        this.score = 0; //set initial player score
+        this.uiManager = new UIManager_1.UIManager(this);
+        this.scoreLabel = this.uiManager.drawScore();
     };
     GameScene.prototype.update = function () {
         this.smallShip.update();
@@ -93,36 +101,6 @@ var GameScene = /** @class */ (function (_super) {
         this.background.update();
         this.player.update();
         // this.tweenTest.update();
-    };
-    /*#############################################################|
-    |  >>> PHYSICS functions
-    *##############################################################*/
-    // Collisions ========================================
-    GameScene.prototype.onPickPowerUp = function (player, powerUp) {
-        console.log("Player picking up powerUp");
-        //@ts-ignore
-        powerUp.disableBody(true, true); //this will inactivate and hide the power up
-    };
-    GameScene.prototype.onBeamsPowerUpCollision = function (beam, powerUp) {
-        console.log("Beam destroyed");
-        beam.destroy();
-    };
-    GameScene.prototype.onPlayerDestroy = function (player, enemy) {
-        console.log("destroying player");
-        // player.destroy();
-        //trigger enemy destroy animation
-        if (!enemy.isDestroyed) {
-            enemy.onDestroy();
-            enemy.isDestroyed = true;
-            enemy.setTexture(Ship_resources_1.shipResources.images.explosion.key); //switch this sprite texture to the explosion one
-            enemy.play(Ship_resources_1.shipResources.images.explosion.key);
-            var explosionSound = this.sound.add(Ship_resources_1.shipResources.sounds.shipExplosion.key);
-            explosionSound.play();
-            setTimeout(function () {
-                //wait animation complete and then destroy the instance
-                enemy.destroy();
-            }, 500);
-        }
     };
     return GameScene;
 }(Phaser.Scene));

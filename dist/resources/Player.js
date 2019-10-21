@@ -24,6 +24,7 @@ var Player = /** @class */ (function (_super) {
         _this.speed = 200;
         _this.shootingDelay = 500;
         _this.canShoot = true;
+        _this.hp = 100;
         // Sound
         _this.minorShot = _this.scene.sound.add(Player_resources_1.playerResources.sounds.minorShot.key);
         // Graphic resources ====================================

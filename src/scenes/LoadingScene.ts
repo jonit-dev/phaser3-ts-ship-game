@@ -3,7 +3,7 @@ import { Background } from "../resources/Background";
 import { Explosion } from "../resources/effects/Explosion";
 import { PowerUp } from "../resources/items/PowerUp";
 import { Ship } from "../resources/Ship";
-import { UIManager } from "../resources/UIManager";
+import { UIManager } from "../resources/Managers/UIManager";
 import { Beam } from "./../resources/Beam";
 import { Player } from "./../resources/Player";
 

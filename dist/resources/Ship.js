@@ -15,6 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Ship_resources_1 = require("../constants/Ship.resources");
 var Main_1 = require("../Main");
+var Explosion_1 = require("./effects/Explosion");
 var Ship = /** @class */ (function (_super) {
     __extends(Ship, _super);
     function Ship(scene, x, y, texture, frame, type, startMoving) {
@@ -22,22 +23,22 @@ var Ship = /** @class */ (function (_super) {
         var _this = _super.call(this, scene, x, y, texture, frame) || this;
         _this.initX = x;
         _this.initY = y;
-        _this.type = type;
+        _this.shipType = type;
         _this.canMove = startMoving;
         _this.speed = 0;
-        _this.isDestroyed = false;
         if (!_this.canMove) {
             setTimeout(function () {
                 _this.canMove = true;
             }, 3000);
         }
         // Graphic resources ========================================
-        _this.resource = Ship_resources_1.shipResources.images[_this.type];
+        _this.resource = Ship_resources_1.shipResources.images[_this.shipType];
         _this.spriteBody = _this.scene.physics.add.sprite(_this.initX, _this.initY, _this.resource.key);
         _this.scene.enemies.add(_this.spriteBody);
         _this.speed = _this.resource.speed;
         // this.graphic.setScale(2);
         // this.image.flipY = true;
+        _this.spriteBody.setOrigin(0.5, 0.5);
         _this.initAnimations();
         // Physics ========================================
         // Interactivity ========================================
@@ -46,11 +47,8 @@ var Ship = /** @class */ (function (_super) {
         return _this;
     }
     Ship.prototype.onClickDestroyShip = function (pointer, gameObject) {
-        gameObject.setTexture(Ship_resources_1.shipResources.images.explosion.key); //switch this sprite texture to the explosion one
-        gameObject.play(Ship_resources_1.shipResources.images.explosion.key); //play animation
-        console.log("clicked me");
-        var explosionSound = this.scene.sound.add(Ship_resources_1.shipResources.sounds.shipExplosion.key);
-        explosionSound.play();
+        var explosion = new Explosion_1.Explosion(this.scene, this.x, this.y, Ship_resources_1.shipResources.images.explosion.key, 0);
+        gameObject.destroy();
     };
     Ship.prototype.initAnimations = function () {
         this.scene.anims.create({
@@ -63,22 +61,9 @@ var Ship = /** @class */ (function (_super) {
             repeat: -1 //infinite loop
         });
         this.spriteBody.play(this.resource.key, true);
-        this.scene.anims.create({
-            key: Ship_resources_1.shipResources.images.explosion.key,
-            frames: this.scene.anims.generateFrameNumbers(Ship_resources_1.shipResources.images.explosion.key, {
-                start: 0,
-                end: 4
-            }),
-            frameRate: 20,
-            repeat: 0,
-            hideOnComplete: true
-        });
     };
     Ship.preload = function (loadingScene) {
         // Audio
-        loadingScene.load.audio(Ship_resources_1.shipResources.sounds.shipExplosion.key, [
-            Ship_resources_1.shipResources.sounds.shipExplosion.path
-        ]);
         // Images ========================================
         loadingScene.load.spritesheet(Ship_resources_1.shipResources.images.smallShip.key, Ship_resources_1.shipResources.images.smallShip.path, {
             frameWidth: 16,

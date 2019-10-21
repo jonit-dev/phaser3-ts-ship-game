@@ -67,7 +67,9 @@ var AlignGrid = /** @class */ (function () {
         if (a === void 0) { a = 1; }
         this.show(a);
         var n = 0;
+        //@ts-ignore
         for (var i = 0; i < this.rows; i++) {
+            //@ts-ignore
             for (var j = 0; j < this.cols; j++) {
                 var numText = this.scene.add.text(0, 0, n, {
                     color: "red"
