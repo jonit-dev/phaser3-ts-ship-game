@@ -1,10 +1,12 @@
 import { shipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
 import { GameScene } from "../scenes/GameScene";
+import { AnimationType, IAnimationConfig, IResource } from "../types/Global.types";
 import { ShipType } from "../types/Ship.types";
+import { AnimatedBody } from "./abstractions/AnimatedBody";
 import { Explosion } from "./effects/Explosion";
 
-export class Ship extends Phaser.GameObjects.Sprite {
+export class Ship extends AnimatedBody {
   scene: GameScene;
   initX: number;
   initY: number;
@@ -21,31 +23,26 @@ export class Ship extends Phaser.GameObjects.Sprite {
     texture: string,
     frame: string | integer,
     type: ShipType,
-    startMoving: boolean = true
+    resource: IResource,
+    animationType: AnimationType,
+    animationConfig: IAnimationConfig,
+    group?: Phaser.Physics.Arcade.Group
   ) {
-    super(scene, x, y, texture, frame);
-    this.initX = x;
-    this.initY = y;
-    this.shipType = type;
-    this.canMove = startMoving;
-    this.speed = 0;
-
-    if (!this.canMove) {
-      setTimeout(() => {
-        this.canMove = true;
-      }, 3000);
-    }
-
-    // Graphic resources ========================================
-
-    this.resource = shipResources.images[this.shipType];
-
-    this.spriteBody = this.scene.physics.add.sprite(
-      this.initX,
-      this.initY,
-      this.resource.key
+    super(
+      scene,
+      x,
+      y,
+      texture,
+      frame,
+      resource,
+      animationType,
+      animationConfig,
+      group
     );
-    this.scene.enemies.add(this.spriteBody);
+
+    this.shipType = type;
+    this.canMove = true;
+    this.speed = 0;
 
     this.speed = this.resource.speed;
 
@@ -53,7 +50,6 @@ export class Ship extends Phaser.GameObjects.Sprite {
     // this.image.flipY = true;
 
     this.spriteBody.setOrigin(0.5, 0.5);
-    this.initAnimations();
 
     // Physics ========================================
 
@@ -61,20 +57,6 @@ export class Ship extends Phaser.GameObjects.Sprite {
 
     this.spriteBody.setInteractive();
     this.scene.input.on("gameobjectdown", this.onClickDestroyShip);
-  }
-
-  public initAnimations() {
-    this.scene.anims.create({
-      key: this.resource.key,
-      frames: this.scene.anims.generateFrameNumbers(this.resource.key, {
-        start: 0,
-        end: 1
-      }),
-      frameRate: 4, //fps
-      repeat: -1 //infinite loop
-    });
-
-    this.spriteBody.play(this.resource.key, true);
   }
 
   public static preload(loadingScene: any) {

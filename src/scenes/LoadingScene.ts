@@ -2,8 +2,8 @@ import Scenes from "../constants/Scenes";
 import { Background } from "../resources/Background";
 import { Explosion } from "../resources/effects/Explosion";
 import { PowerUp } from "../resources/items/PowerUp";
+import { UIManager } from "../resources/managers/UIManager";
 import { Ship } from "../resources/Ship";
-import { UIManager } from "../resources/Managers/UIManager";
 import { Beam } from "./../resources/Beam";
 import { Player } from "./../resources/Player";
 

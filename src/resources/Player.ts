@@ -1,6 +1,7 @@
 import { shipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
 import { GameScene } from "../scenes/GameScene";
+import { AnimationType } from "../types/Global.types";
 import { playerResources } from "./../constants/Player.resources";
 import { Beam } from "./Beam";
 import { Explosion } from "./effects/Explosion";
@@ -51,7 +52,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     // physics ========================================
 
     // this.scene.physics.world.enableBody(this);
-    this.spriteBody.setCollideWorldBounds(true);
+    // this.spriteBody.setCollideWorldBounds(true);
 
     // Keyboards events
 
@@ -116,7 +117,16 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.spriteBody.x,
       this.spriteBody.y - 16,
       playerResources.images.shipBeam.key,
-      0
+      0,
+      playerResources.images.shipBeam,
+      AnimationType.OneDirection,
+      {
+        start: 0,
+        end: 1,
+        frameRate: 10,
+        repeat: -1
+      },
+      this.scene.beams
     );
   }
 
@@ -166,13 +176,28 @@ export class Player extends Phaser.GameObjects.Sprite {
   *##############################################################*/
 
   public onResetPlayer() {
-    this.scene.player.spriteBody.enableBody(
+    this.spriteBody.enableBody(
       true,
-      game.canvas.width / 2 - 8,
-      game.canvas.height + 64,
+      game.canvas.width / 2,
+      game.canvas.height,
       true,
       true
     );
+
+    this.spriteBody.alpha = 0.5;
+
+    // screen entrance effect
+    const tween = this.scene.tweens.add({
+      targets: GameScene.player.spriteBody,
+      y: game.canvas.height - 64,
+      ease: "Power1",
+      duration: 1500,
+      repeat: 0,
+      onComplete: function() {
+        GameScene.player.spriteBody.alpha = 1;
+      },
+      callbackScope: this
+    });
   }
   public onPlayerDamage(player: any, enemy: any) {
     console.log("destroying player");
@@ -192,8 +217,9 @@ export class Player extends Phaser.GameObjects.Sprite {
     //TODO: decrease HP
 
     player.disableBody(true, true);
+
     setTimeout(() => {
-      this.scene.player.onResetPlayer();
+      GameScene.player.onResetPlayer();
     }, GameScene.RESPAWN_DELAY);
 
     // Enemy destroying ========================================

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 
+import { env } from "./constants/Env";
 import { GameScene } from "./scenes/GameScene";
 import { LoadingScene } from "./scenes/LoadingScene";
 
@@ -20,7 +21,7 @@ export const game = new Phaser.Game({
   physics: {
     default: "arcade",
     arcade: {
-      debug: true
+      debug: env.debug
     }
   }
 });

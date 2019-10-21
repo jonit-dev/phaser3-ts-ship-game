@@ -3,11 +3,12 @@ import Scenes from "../constants/Scenes";
 import { shipResources } from "../constants/Ship.resources";
 import { game } from "../Main";
 import { Explosion } from "../resources/effects/Explosion";
-import { EventManager } from "../resources/Managers/EventManager";
-import { UIManager } from "../resources/Managers/UIManager";
+import { EventManager } from "../resources/managers/EventManager";
+import { UIManager } from "../resources/managers/UIManager";
 import { Player } from "../resources/Player";
 import { Ship } from "../resources/Ship";
 import { TweenTest } from "../resources/TweenTest";
+import { AnimationType } from "../types/Global.types";
 import { ShipType } from "../types/Ship.types";
 import AlignGrid from "../utils/AlignGrid";
 import { playerResources } from "./../constants/Player.resources";
@@ -35,24 +36,25 @@ export class GameScene extends Phaser.Scene {
   static RESPAWN_DELAY: number = 2000;
   static score: number = 0;
   static scoreLabel: Phaser.GameObjects.BitmapText;
+  static player: Player;
 
   constructor() {
     super({
       key: Scenes.GameScene
     });
   }
-  public init() {
+  public init() {}
+
+  public create() {
     this.powerUps = this.physics.add.group();
     this.beams = this.physics.add.group();
     this.enemies = this.physics.add.group();
-  }
 
-  public create() {
     this.background = new Background(this);
 
     // Sprites ========================================
 
-    this.player = new Player(
+    GameScene.player = new Player(
       this,
       game.canvas.width / 2,
       game.canvas.height * 0.8,
@@ -66,7 +68,16 @@ export class GameScene extends Phaser.Scene {
       -50,
       shipResources.images.smallShip.key,
       0,
-      ShipType.SmallShip
+      ShipType.SmallShip,
+      shipResources.images[ShipType.SmallShip],
+      AnimationType.OneDirection,
+      {
+        start: 0,
+        end: 1,
+        frameRate: 4,
+        repeat: -1
+      },
+      this.enemies
     );
 
     this.attackerShip = new Ship(
@@ -75,7 +86,16 @@ export class GameScene extends Phaser.Scene {
       -50,
       shipResources.images.attackerShip.key,
       0,
-      ShipType.AttackerShip
+      ShipType.AttackerShip,
+      shipResources.images[ShipType.AttackerShip],
+      AnimationType.OneDirection,
+      {
+        start: 0,
+        end: 1,
+        frameRate: 4,
+        repeat: -1
+      },
+      this.enemies
     );
 
     this.motherShip = new Ship(
@@ -84,7 +104,16 @@ export class GameScene extends Phaser.Scene {
       -50,
       shipResources.images.motherShip.key,
       0,
-      ShipType.MotherShip
+      ShipType.MotherShip,
+      shipResources.images[ShipType.MotherShip],
+      AnimationType.OneDirection,
+      {
+        start: 0,
+        end: 1,
+        frameRate: 4,
+        repeat: -1
+      },
+      this.enemies
     );
 
     // Items ========================================
@@ -97,7 +126,11 @@ export class GameScene extends Phaser.Scene {
         Math.random() * game.canvas.width,
         Math.random() * game.canvas.height,
         shipResources.images.powerUp.key,
-        0
+        0,
+        shipResources.images.powerUp,
+        AnimationType.OneDirection,
+        null,
+        this.powerUps
       );
     }
 
@@ -153,9 +186,9 @@ export class GameScene extends Phaser.Scene {
   public update() {
     this.smallShip.update();
     this.attackerShip.update();
-    this.motherShip.update();
+    // this.motherShip.update();
     this.background.update();
-    this.player.update();
+    GameScene.player.update();
     // this.tweenTest.update();
   }
 }

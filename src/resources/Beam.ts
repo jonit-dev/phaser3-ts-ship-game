@@ -1,13 +1,15 @@
 import { shipResources } from "../constants/Ship.resources";
 import { GameScene } from "../scenes/GameScene";
+import { AnimationType, IAnimationConfig, IResource } from "../types/Global.types";
 import { ShipType } from "../types/Ship.types";
 import { playerResources } from "./../constants/Player.resources";
 import { game } from "./../Main";
+import { AnimatedBody } from "./abstractions/AnimatedBody";
 import { Explosion } from "./effects/Explosion";
-import { UIManager } from "./Managers/UIManager";
+import { UIManager } from "./managers/UIManager";
 import { Ship } from "./Ship";
 
-export class Beam extends Phaser.GameObjects.Sprite {
+export class Beam extends AnimatedBody {
   scene: GameScene;
 
   initX: number;
@@ -20,46 +22,25 @@ export class Beam extends Phaser.GameObjects.Sprite {
     x: number,
     y: number,
     texture: string,
-    frame: string | integer
+    frame: string | integer,
+    resource: IResource,
+    animationType: AnimationType,
+    animationConfig: IAnimationConfig,
+    group?: Phaser.Physics.Arcade.Group
   ) {
-    super(scene, x, y, texture, frame);
-
-    this.initX = x;
-    this.initY = y;
-
-    // Sprites ====================================
-    this.spriteBody = this.scene.physics.add.sprite(
-      this.initX,
-      this.initY,
-      playerResources.images.shipBeam.key
+    super(
+      scene,
+      x,
+      y,
+      texture,
+      frame,
+      resource,
+      animationType,
+      animationConfig,
+      group
     );
 
-    // physics ========================================
-
-    this.scene.beams.add(this.spriteBody);
-
-    // physics ========================================
-
     this.spriteBody.setVelocity(0, -100);
-
-    this.initAnimations();
-  }
-
-  public initAnimations() {
-    this.scene.anims.create({
-      key: playerResources.images.shipBeam.key,
-      frames: this.scene.anims.generateFrameNumbers(
-        playerResources.images.shipBeam.key,
-        {
-          start: 0,
-          end: 1
-        }
-      ),
-      frameRate: 10, //fps
-      repeat: -1
-    });
-
-    this.spriteBody.play(playerResources.images.shipBeam.key, true);
   }
 
   public static preload(loadingScene: any) {

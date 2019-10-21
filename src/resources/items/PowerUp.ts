@@ -1,7 +1,9 @@
 import { shipResources } from "../../constants/Ship.resources";
 import { GameScene } from "../../scenes/GameScene";
+import { AnimationType, IAnimationConfig, IResource } from "../../types/Global.types";
+import { AnimatedBody } from "../abstractions/AnimatedBody";
 
-export class PowerUp extends Phaser.GameObjects.Sprite {
+export class PowerUp extends AnimatedBody {
   scene: GameScene;
   initX: number;
   initY: number;
@@ -12,31 +14,32 @@ export class PowerUp extends Phaser.GameObjects.Sprite {
     x: number,
     y: number,
     texture: string,
-    frame: string | integer
+    frame: string | integer,
+    resource: IResource,
+    animationType: AnimationType,
+    animationConfig: IAnimationConfig,
+    group?: Phaser.Physics.Arcade.Group
   ) {
-    super(scene, x, y, texture, frame);
-
-    this.initX = x;
-    this.initY = y;
-
-    // Graphic resources ====================================
-    this.spriteBody = this.scene.physics.add.sprite(
-      this.initX,
-      this.initY,
-      shipResources.images.powerUp.key
+    super(
+      scene,
+      x,
+      y,
+      texture,
+      frame,
+      resource,
+      animationType,
+      animationConfig,
+      group
     );
-
-    this.scene.powerUps.add(this.spriteBody);
-
-    this.initAnimations();
-
-    // physics ========================================
 
     this.spriteBody.setVelocity(100, 100);
     this.spriteBody.setCollideWorldBounds(true);
     this.spriteBody.setBounce(1);
+
+    this.initAnimations();
   }
 
+  //this will overload the default initAnimations from AnimatedBody
   public initAnimations() {
     // randomize between 2 animations
 
@@ -91,6 +94,4 @@ export class PowerUp extends Phaser.GameObjects.Sprite {
       }
     );
   }
-
-  public update() {}
 }
