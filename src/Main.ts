@@ -1,12 +1,10 @@
 import Phaser from "phaser";
 
 import { env } from "./constants/Env";
-import { GameScene } from "./scenes/GameScene";
-import { LoadingScene } from "./scenes/LoadingScene";
 
 export const game = new Phaser.Game({
   type: Phaser.AUTO,
-  scene: [LoadingScene, GameScene],
+  scene: [],
   backgroundColor: "#4488AA",
 
   render: {

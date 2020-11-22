@@ -7,10 +7,8 @@ import { EventManager } from "../resources/managers/EventManager";
 import { UIManager } from "../resources/managers/UIManager";
 import { Player } from "../resources/Player";
 import { Ship } from "../resources/Ship";
-import { TweenTest } from "../resources/TweenTest";
 import { AnimationType } from "../types/Global.types";
 import { ShipType } from "../types/Ship.types";
-import AlignGrid from "../utils/AlignGrid";
 import { playerResources } from "./../constants/Player.resources";
 import { Background } from "./../resources/Background";
 import { PowerUp } from "./../resources/items/PowerUp";
@@ -23,8 +21,6 @@ export class GameScene extends Phaser.Scene {
   motherShip: Ship;
 
   player: Player;
-  tweenTest: TweenTest;
-  grid: AlignGrid;
   powerUps: Phaser.Physics.Arcade.Group;
   beams: Phaser.Physics.Arcade.Group;
   enemies: Phaser.Physics.Arcade.Group;
@@ -43,7 +39,7 @@ export class GameScene extends Phaser.Scene {
       key: Scenes.GameScene
     });
   }
-  public init() {}
+  public init() { }
 
   public create() {
     this.powerUps = this.physics.add.group();
